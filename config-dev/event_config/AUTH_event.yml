@@ -4,7 +4,7 @@ description: Authorization Service transactions
 tables:
 
   # ===== TABLE 1 =====
-  - tableName: AUTH_TRANSACTIONS
+  - tableName: SEND_TRANSACTIONS
     order: 1
     type: main
     mandatory:
@@ -54,7 +54,7 @@ tables:
       RESP_CD: $.responseCode
 
   # ===== TABLE 3 =====
-  - tableName: AUTH_RECIP_DTL
+  - tableName: SEND_RECIP_DTL
     order: 3
     type: recipient
     parentIdField: TRAN_ID
@@ -83,7 +83,7 @@ tables:
       RECV_POST_CD: $.merchant.address.postalCode
 
   # ===== TABLE 4 =====
-  - tableName: AUTH_TRAN_ADDR_DTL
+  - tableName: SEND_TRAN_ADDR_DTL
     order: 4
     type: address
     parentIdField: TRAN_ID
