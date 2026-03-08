@@ -3,7 +3,7 @@ description: Authorization Service transactions
 
 tables:
 
-  # ===== TABLE 1: AUTH_TRANSACTIONS (Main Table) =====
+  # ===== TABLE 1 =====
   - tableName: AUTH_TRANSACTIONS
     order: 1
     type: main
@@ -32,67 +32,57 @@ tables:
       PYMT_MTHD: $.paymentMethod
       PYMT_PURP: $.paymentPurpose
 
-# ===== TABLE 2: SEND_TRAN_DTL (Detail Table) =====
-- tableName: SEND_TRAN_DTL
-  order: 2
-  type: detail
-  parentIdField: TRAN_ID
-  mandatory:
-    - TRAN_ID
-
-  mapping:
-    TRAN_ID: $.authorizationId
-    TRAN_CRTE_DT: $.transactionLocalDateTime
-    PAYMT_REF: $.referenceId
-    UNQ_TRAN_REF: $.correlationId
-
-    CRDTYCD: $.cardTypeCode
-    POSPERAT: $.posEntryMode
-    CRDTYCDDES: $.cardTypeDescription
-
-    TRAN_AMT: $.authorizationAmount.value
-    TRAN_CRNCY: $.authorizationAmount.currency
-    AUTH_CD: $.authorizationCode
-    RESP_CD: $.responseCode
-
-
-
-  # ===== TABLE 3: AUTH_RECIP_DTL (Recipient Table) =====
-  - tableName: AUTH_RECIP_DTL
-    order: 3
-    type: recipient
+  # ===== TABLE 2 =====
+  - tableName: SEND_TRAN_DTL
+    order: 2
+    type: detail
     parentIdField: TRAN_ID
-    autoGenerateId: true
-
     mandatory:
       - TRAN_ID
 
     mapping:
       TRAN_ID: $.authorizationId
       TRAN_CRTE_DT: $.transactionLocalDateTime
+      PAYMT_REF: $.referenceId
+      UNQ_TRAN_REF: $.correlationId
+      CRDTYCD: $.cardTypeCode
+      POSPERAT: $.posEntryMode
+      CRDTYCDDES: $.cardTypeDescription
+      TRAN_AMT: $.authorizationAmount.value
+      TRAN_CRNCY: $.authorizationAmount.currency
+      AUTH_CD: $.authorizationCode
+      RESP_CD: $.responseCode
 
+  # ===== TABLE 3 =====
+  - tableName: AUTH_RECIP_DTL
+    order: 3
+    type: recipient
+    parentIdField: TRAN_ID
+    autoGenerateId: true
+    mandatory:
+      - TRAN_ID
+
+    mapping:
+      TRAN_ID: $.authorizationId
+      TRAN_CRTE_DT: $.transactionLocalDateTime
       SEND_FIRST_NAM: $.cardHolder.firstName
       SEND_LST_NAM: $.cardHolder.lastName
       SEND_ACCT_NUM: $.cardAccountNumber
       SEND_ACCT_URI: $.cardAccountNumber
-
       SEND_ST_LINE1: $.cardHolder.address.line1
       SEND_CITY: $.cardHolder.address.city
       SEND_CNTRY_NAM: $.cardHolder.address.country
       SEND_POST_CD: $.cardHolder.address.postalCode
-
       RECV_FIRST_NAM: $.merchant.name
       RECV_LST_NAM: $.merchant.category
       RECV_ACCT_NUM: $.merchantId
       RECV_ACCT_URI: $.merchantId
-
       RECV_ST_LINE1: $.merchant.address.line1
       RECV_CITY: $.merchant.address.city
       RECV_CNTRY_NAM: $.merchant.address.country
       RECV_POST_CD: $.merchant.address.postalCode
 
-
-  # ===== TABLE 4: AUTH_TRAN_ADDR_DTL (Address Table) =====
+  # ===== TABLE 4 =====
   - tableName: AUTH_TRAN_ADDR_DTL
     order: 4
     type: address
