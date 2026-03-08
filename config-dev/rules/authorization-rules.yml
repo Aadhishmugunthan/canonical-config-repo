@@ -3,7 +3,7 @@
 
 
 # Rule 1: Validate Required Metadata
-- name: "AUTHORIZATION - Validate Required Metadata"
+- name: "AUTH - Validate Required Metadata"
   description: "Ensure eventMetadata is not null or empty"
   priority: 2
   condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
@@ -13,7 +13,7 @@
 
 
 # Rule 2: Ignore Test Events
-- name: "AUTHORIZATION - Ignore Test Events"
+- name: "AUTH - Ignore Test Events"
   description: "Ignore events from test environments"
   priority: 1
   condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
@@ -23,7 +23,7 @@
 
 
 # Rule 3: Validate Event Payload
-- name: "AUTHORIZATION - Validate Payload"
+- name: "AUTH - Validate Payload"
   description: "Ensure event payload is not empty"
   priority: 2
   condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
@@ -33,7 +33,7 @@
 
 
 # Rule 4: Default ACQ_ICA to 0 if Non-Numeric
-- name: "AUTHORIZATION - Default ACQ_ICA to 0 if Non-Numeric"
+- name: "AUTH - Default ACQ_ICA to 0 if Non-Numeric"
   description: "Set brand to 0 if value is non-numeric"
   priority: 3
   condition: "eventPayload.contains('brand') && eventPayload.contains('\"brand\":\"') && !eventPayload.matches('.*\"brand\":\"[0-9]+\".*')"
@@ -43,7 +43,7 @@
 
 
 # Rule 5: Ignore if Authorization ID Missing
-- name: "AUTHORIZATION - Ignore if Authorization ID Missing"
+- name: "AUTH - Ignore if Authorization ID Missing"
   description: "Ignore events where authorizationId is missing"
   priority: 1
   condition: "!eventPayload.contains('authorizationId') || eventPayload.contains('\"authorizationId\":null') || eventPayload.contains('\"authorizationId\":\"\"')"
@@ -53,7 +53,7 @@
 
 
 # Rule 6: Validate Event Source
-- name: "AUTHORIZATION - Validate Event Source"
+- name: "AUTH - Validate Event Source"
   description: "Ignore events from non-allowed sources"
   priority: 1
   condition: "eventSource == null || (!eventSource.toUpperCase().contains('AUTH'))"
@@ -63,7 +63,7 @@
 
 
 # Rule 7: Validate Regulatory Region
-- name: "AUTHORIZATION - Validate Regulatory Region"
+- name: "AUTH - Validate Regulatory Region"
   description: "Ignore events from non-allowed regulatory regions (STL, ATL only)"
   priority: 1
   condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
@@ -73,7 +73,7 @@
 
 
 # Rule 8: Validate Authorization Amount
-- name: "AUTHORIZATION - Validate Authorization Amount"
+- name: "AUTH - Validate Authorization Amount"
   description: "Ignore events where authorizationAmount is missing or zero"
   priority: 2
   condition: "!eventPayload.contains('authorizationAmount') || eventPayload.contains('\"value\":null') || eventPayload.contains('\"value\":0') || eventPayload.contains('\"value\":\"\"')"
@@ -83,7 +83,7 @@
 
 
 # Rule 9: Validate Authorization Currency
-- name: "AUTHORIZATION - Validate Authorization Currency"
+- name: "AUTH - Validate Authorization Currency"
   description: "Ignore events where currency is missing"
   priority: 2
   condition: "!eventPayload.contains('\"currency\"') || eventPayload.contains('\"currency\":null') || eventPayload.contains('\"currency\":\"\"')"
@@ -93,7 +93,7 @@
 
 
 # Rule 10: Validate Card Account Number
-- name: "AUTHORIZATION - Validate Card Account"
+- name: "AUTH - Validate Card Account"
   description: "Ignore events where cardAccountNumber is missing"
   priority: 2
   condition: "!eventPayload.contains('cardAccountNumber') || eventPayload.contains('\"cardAccountNumber\":null') || eventPayload.contains('\"cardAccountNumber\":\"\"')"
@@ -103,7 +103,7 @@
 
 
 # Rule 11: Default Response Code if Missing
-- name: "AUTHORIZATION - Default Response Code if Missing"
+- name: "AUTH - Default Response Code if Missing"
   description: "Set responseCode to UNKNOWN if absent"
   priority: 3
   condition: "!eventPayload.contains('responseCode') || eventPayload.contains('\"responseCode\":null') || eventPayload.contains('\"responseCode\":\"\"')"
