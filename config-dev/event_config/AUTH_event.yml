@@ -1,4 +1,4 @@
-eventName: AUTHORIZATION
+eventName: AUTH
 description: Authorization Service transactions
 
 tables:
