@@ -93,7 +93,6 @@ tables:
     ST_LINE1: $.institution
     CITY: $.country
     CNTRY_NAM: $.country
-    ADDR_STAT: $.clearingStatus.eligible
     ADDR_STAT: $.paymentMethod
 
   - type: CARDHOLDER
