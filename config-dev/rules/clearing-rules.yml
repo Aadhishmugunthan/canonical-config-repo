@@ -1,113 +1,146 @@
----
+eventName: CLEARING
+description: Clearing Service transactions
 
-# CLEARING Event Rules - Complete Set
+tables:
 
-# Rule 1: Validate Required Metadata
+# ===== TABLE 1 =====
 
-* name: "CLEARING - Validate Required Metadata"
-  description: "Ensure eventMetadata is not null or empty"
-  priority: 2
-  condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
-  actions:
+* tableName: SEND_TRANSACTIONS
+  order: 1
+  type: main
+  mandatory:
 
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing metadata: ' + envelope.getEventId())"
+  * TRAN_ID
+  * TRAN_TYPE
 
-# Rule 2: Ignore Test Events
+  mapping:
+  TRAN_ID: $.authorizationId
+  TRAN_TYPE: $.transactionType
+  CUR_STAT: $.authorizationStatus.responseReasonCode
+  ORIG_STAT: $.authorizationStatus.eligible
+  ACCT_NUM: $.cardAccountNumber
+  NTWRK_CD: $.network
+  NTWRK_RESP_CD: $.brand
+  NTWRK_RESP_CD_DESC: $.acceptanceBrand
+  SW_SER_NUM: $.referenceId
+  ORIG_INST_ID: $.partnerId
+  ORIG_INST_NAM: $.partnerName
+  TRANFR_ACPT_NAM: $.institution
+  TRANFR_ACPT_ID: $.partnerId
+  CORLTN_ID: $.correlationId
+  TRAN_CRTE_DT: $.transactionLocalDateTime
+  TRAN_AMT: $.authorizationAmount.value
+  TRAN_CRNCY: $.authorizationAmount.currency
+  PYMT_MTHD: $.paymentMethod
+  PYMT_PURP: $.paymentPurpose
 
-* name: "CLEARING - Ignore Test Events"
-  description: "Ignore events coming from test environments"
-  priority: 1
-  condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
-  actions:
+# ===== TABLE 2 =====
 
-  * "envelope.setIgnore(true)"
-  * "System.out.println('🧪 Rule: Ignoring TEST CLEARING event: ' + envelope.getEventId())"
+* tableName: SEND_TRAN_DTL
+  order: 2
+  type: detail
+  parentIdField: TRAN_ID
+  mandatory:
 
-# Rule 3: Validate Event Payload
+  * TRAN_ID
 
-* name: "CLEARING - Validate Payload"
-  description: "Ensure clearing payload is not empty"
-  priority: 2
-  condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
-  actions:
+  mapping:
+  TRAN_ID: $.authorizationId
+  TRAN_CRTE_DT: $.transactionLocalDateTime
+  PAYMT_REF: $.referenceId
+  UNQ_TRAN_REF: $.correlationId
+  CRDTYCD: $.cardTypeCode
+  POSPERAT: $.posEntryMode
+  CRDTYCDDES: $.cardTypeDescription
+  TRAN_AMT: $.authorizationAmount.value
+  TRAN_CRNCY: $.authorizationAmount.currency
+  AUTH_CD: $.authorizationCode
+  RESP_CD: $.responseCode
 
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event with empty payload: ' + envelope.getEventId())"
+# ===== TABLE 3 =====
 
-# Rule 4: Ignore if Authorization ID Missing
+* tableName: SEND_RECIP_DTL
+  order: 3
+  type: recipient
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+  mandatory:
 
-* name: "CLEARING - Ignore if Authorization ID Missing"
-  description: "Ignore events where authorizationId is missing"
-  priority: 1
-  condition: "!eventPayload.contains('authorizationId') || eventPayload.contains('"authorizationId":null') || eventPayload.contains('"authorizationId":""')"
-  actions:
+  * TRAN_ID
 
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing authorizationId: ' + envelope.getEventId())"
+  mapping:
+  TRAN_ID: $.authorizationId
+  TRAN_CRTE_DT: $.transactionLocalDateTime
+  SEND_FIRST_NAM: $.cardHolder.firstName
+  SEND_LST_NAM: $.cardHolder.lastName
+  SEND_ACCT_NUM: $.cardAccountNumber
+  SEND_ACCT_URI: $.cardAccountNumber
+  SEND_ST_LINE1: $.cardHolder.address.line1
+  SEND_CITY: $.cardHolder.address.city
+  SEND_CNTRY_NAM: $.cardHolder.address.country
+  SEND_POST_CD: $.cardHolder.address.postalCode
+  RECV_FIRST_NAM: $.merchant.name
+  RECV_LST_NAM: $.merchant.category
+  RECV_ACCT_NUM: $.merchantId
+  RECV_ACCT_URI: $.merchantId
+  RECV_ST_LINE1: $.merchant.address.line1
+  RECV_CITY: $.merchant.address.city
+  RECV_CNTRY_NAM: $.merchant.address.country
+  RECV_POST_CD: $.merchant.address.postalCode
 
-# Rule 5: Validate Clearing Status
+# ===== TABLE 4 =====
 
-* name: "CLEARING - Validate Clearing Status"
-  description: "Ignore events where clearing status is missing"
-  priority: 2
-  condition: "!eventPayload.contains('"status"') || eventPayload.contains('"status":null') || eventPayload.contains('"status":""')"
-  actions:
+* tableName: SEND_TRAN_ADDR_DTL
+  order: 4
+  type: address
+  parentIdField: TRAN_ID
+  autoGenerateId: true
 
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearing status: ' + envelope.getEventId())"
+  addressTypes:
 
-# Rule 6: Validate Clearing Date
+  * type: INSTITUTION
+    rootPath: $
+    fields:
+    ST_LINE1: $.institution
+    CITY: $.country
+    CNTRY_NAM: $.country
+    POST_CD: $.authorizationAmount.currency
+    ADDR_STAT: $.paymentMethod
 
-* name: "CLEARING - Validate Clearing Date"
-  description: "Ignore events where clearing date is missing"
-  priority: 2
-  condition: "!eventPayload.contains('clearingDate') || eventPayload.contains('"clearingDate":null') || eventPayload.contains('"clearingDate":""')"
-  actions:
+  * type: CARDHOLDER
+    rootPath: $
+    fields:
+    ST_LINE1: $.cardHolder.address.line1
+    ST_LINE2: $.cardHolder.address.line2
+    CITY: $.cardHolder.address.city
+    ST: $.cardHolder.address.state
+    CNTRY_NAM: $.cardHolder.address.country
+    POST_CD: $.cardHolder.address.postalCode
+    ADDR_STAT: $.authorizationStatus.eligible
 
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearingDate: ' + envelope.getEventId())"
+  * type: MERCHANT
+    rootPath: $
+    fields:
+    ST_LINE1: $.merchant.address.line1
+    ST_LINE2: $.merchant.address.line2
+    CITY: $.merchant.address.city
+    ST: $.merchant.address.state
+    CNTRY_NAM: $.merchant.address.country
+    POST_CD: $.merchant.address.postalCode
+    ADDR_STAT: $.authorizationStatus.responseReasonCode
 
-# Rule 7: Validate Switch Date
+# ===== TABLE 5 =====
 
-* name: "CLEARING - Validate Switch Date"
-  description: "Ignore events where switchDate is missing"
-  priority: 2
-  condition: "!eventPayload.contains('switchDate') || eventPayload.contains('"switchDate":null') || eventPayload.contains('"switchDate":""')"
-  actions:
+* tableName: CLEARING
+  order: 5
+  type: clearing
+  parentIdField: TRAN_ID
+  mandatory:
 
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing switchDate: ' + envelope.getEventId())"
+  * TRAN_ID
 
-# Rule 8: Validate Event Source
-
-* name: "CLEARING - Validate Event Source"
-  description: "Ignore events from non-clearing sources"
-  priority: 1
-  condition: "eventSource == null || (!eventSource.toUpperCase().contains('CLEAR'))"
-  actions:
-
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
-
-# Rule 9: Default Clearing Status if Missing
-
-* name: "CLEARING - Default Status"
-  description: "Set clearing status to PENDING if missing"
-  priority: 3
-  condition: "!eventPayload.contains('"status"') || eventPayload.contains('"status":""')"
-  actions:
-
-  * "envelope.setEventPayload(eventPayload.replaceAll('"status":"[^"]*"', '"status":"PENDING"'))"
-  * "System.out.println('🔧 Rule: Defaulted clearing status to PENDING for event: ' + envelope.getEventId())"
-
-# Rule 10: Validate Regulatory Region
-
-* name: "CLEARING - Validate Regulatory Region"
-  description: "Allow only STL and ATL regulatory regions"
-  priority: 1
-  condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
-  actions:
-
-  * "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
+  mapping:
+  TRAN_ID: $.authorizationId
+  CLRST: $.clearing.status
+  CLRDT: $.clearing.clearingDate
+  SWTDT: $.clearing.switchDate
