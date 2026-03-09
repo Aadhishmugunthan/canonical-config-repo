@@ -3,130 +3,134 @@ description: Clearing Service transactions
 
 tables:
 
-- tableName: SEND_TRANSACTIONS
-  order: 1
-  type: main
-  mandatory:
+  - tableName: SEND_TRANSACTIONS
+    order: 1
+    type: main
 
-  - TRAN_ID
-  - TRAN_TYPE
+    mandatory:
+      - TRAN_ID
+      - TRAN_TYPE
 
-  mapping:
-  TRAN_ID: $.clearingId
-  TRAN_TYPE: $.transactionType
-  CUR_STAT: $.clearingStatus.responseReasonCode
-  ORIG_STAT: $.clearingStatus.eligible
-  ACCT_NUM: $.cardAccountNumber
-  NTWRK_CD: $.network
-  NTWRK_RESP_CD: $.brand
-  NTWRK_RESP_CD_DESC: $.acceptanceBrand
-  SW_SER_NUM: $.referenceId
-  ORIG_INST_ID: $.partnerId
-  ORIG_INST_NAM: $.partnerName
-  TRANFR_ACPT_NAM: $.institution
-  TRANFR_ACPT_ID: $.partnerId
-  CORLTN_ID: $.correlationId
-  TRAN_CRTE_DT: $.transactionLocalDateTime
-  TRAN_AMT: $.clearingAmount.value
-  TRAN_CRNCY: $.clearingAmount.currency
-  PYMT_MTHD: $.paymentMethod
-  PYMT_PURP: $.paymentPurpose
+    mapping:
+      TRAN_ID: $.clearingId
+      TRAN_TYPE: $.transactionType
+      CUR_STAT: $.clearingStatus.responseReasonCode
+      ORIG_STAT: $.clearingStatus.eligible
+      ACCT_NUM: $.cardAccountNumber
+      NTWRK_CD: $.network
+      NTWRK_RESP_CD: $.brand
+      NTWRK_RESP_CD_DESC: $.acceptanceBrand
+      SW_SER_NUM: $.referenceId
+      ORIG_INST_ID: $.partnerId
+      ORIG_INST_NAM: $.partnerName
+      TRANFR_ACPT_NAM: $.institution
+      TRANFR_ACPT_ID: $.partnerId
+      CORLTN_ID: $.correlationId
+      TRAN_CRTE_DT: $.transactionLocalDateTime
+      TRAN_AMT: $.clearingAmount.value
+      TRAN_CRNCY: $.clearingAmount.currency
+      PYMT_MTHD: $.paymentMethod
+      PYMT_PURP: $.paymentPurpose
 
-- tableName: SEND_TRAN_DTL
-  order: 2
-  type: detail
-  parentIdField: TRAN_ID
-  mandatory:
+  - tableName: SEND_TRAN_DTL
+    order: 2
+    type: detail
+    parentIdField: TRAN_ID
 
-  - TRAN_ID
+    mandatory:
+      - TRAN_ID
 
-  mapping:
-  TRAN_ID: $.clearingId
-  TRAN_CRTE_DT: $.transactionLocalDateTime
-  PAYMT_REF: $.referenceId
-  UNQ_TRAN_REF: $.correlationId
-  TRAN_AMT: $.clearingAmount.value
-  TRAN_CRNCY: $.clearingAmount.currency
-  AUTH_CD: $.authorizationCode
-  RESP_CD: $.responseCode
+    mapping:
+      TRAN_ID: $.clearingId
+      TRAN_CRTE_DT: $.transactionLocalDateTime
+      PAYMT_REF: $.referenceId
+      UNQ_TRAN_REF: $.correlationId
+      CRDTYCD: $.cardTypeCode
+      POSPERAT: $.posEntryMode
+      CRDTYCDDES: $.cardTypeDescription
+      TRAN_AMT: $.clearingAmount.value
+      TRAN_CRNCY: $.clearingAmount.currency
+      AUTH_CD: $.authorizationCode
+      RESP_CD: $.responseCode
 
-- tableName: SEND_RECIP_DTL
-  order: 3
-  type: recipient
-  parentIdField: TRAN_ID
-  autoGenerateId: true
-  mandatory:
+  - tableName: SEND_RECIP_DTL
+    order: 3
+    type: recipient
+    parentIdField: TRAN_ID
+    autoGenerateId: true
 
-  - TRAN_ID
+    mandatory:
+      - TRAN_ID
 
-  mapping:
-  TRAN_ID: $.clearingId
-  TRAN_CRTE_DT: $.transactionLocalDateTime
-  SEND_FIRST_NAM: $.cardHolder.firstName
-  SEND_LST_NAM: $.cardHolder.lastName
-  SEND_ACCT_NUM: $.cardAccountNumber
-  SEND_ACCT_URI: $.cardAccountNumber
-  SEND_ST_LINE1: $.cardHolder.address.line1
-  SEND_CITY: $.cardHolder.address.city
-  SEND_CNTRY_NAM: $.cardHolder.address.country
-  SEND_POST_CD: $.cardHolder.address.postalCode
-  RECV_FIRST_NAM: $.merchant.name
-  RECV_LST_NAM: $.merchant.category
-  RECV_ACCT_NUM: $.merchantId
-  RECV_ACCT_URI: $.merchantId
-  RECV_ST_LINE1: $.merchant.address.line1
-  RECV_CITY: $.merchant.address.city
-  RECV_CNTRY_NAM: $.merchant.address.country
-  RECV_POST_CD: $.merchant.address.postalCode
+    mapping:
+      TRAN_ID: $.clearingId
+      TRAN_CRTE_DT: $.transactionLocalDateTime
+      SEND_FIRST_NAM: $.cardHolder.firstName
+      SEND_LST_NAM: $.cardHolder.lastName
+      SEND_ACCT_NUM: $.cardAccountNumber
+      SEND_ACCT_URI: $.cardAccountNumber
+      SEND_ST_LINE1: $.cardHolder.address.line1
+      SEND_CITY: $.cardHolder.address.city
+      SEND_CNTRY_NAM: $.cardHolder.address.country
+      SEND_POST_CD: $.cardHolder.address.postalCode
+      RECV_FIRST_NAM: $.merchant.name
+      RECV_LST_NAM: $.merchant.category
+      RECV_ACCT_NUM: $.merchantId
+      RECV_ACCT_URI: $.merchantId
+      RECV_ST_LINE1: $.merchant.address.line1
+      RECV_CITY: $.merchant.address.city
+      RECV_CNTRY_NAM: $.merchant.address.country
+      RECV_POST_CD: $.merchant.address.postalCode
 
-- tableName: SEND_TRAN_ADDR_DTL
-  order: 4
-  type: address
-  parentIdField: TRAN_ID
-  autoGenerateId: true
+  - tableName: SEND_TRAN_ADDR_DTL
+    order: 4
+    type: address
+    parentIdField: TRAN_ID
+    autoGenerateId: true
 
-  addressTypes:
+    addressTypes:
 
-  - type: INSTITUTION
-    rootPath: $
-    fields:
-    ST_LINE1: $.institution
-    CITY: $.country
-    CNTRY_NAM: $.country
-    ADDR_STAT: $.paymentMethod
+      - type: INSTITUTION
+        rootPath: $
+        fields:
+          ST_LINE1: $.institution
+          CITY: $.country
+          CNTRY_NAM: $.country
+          POST_CD: $.clearingAmount.currency
+          ADDR_STAT: $.paymentMethod
 
-  - type: CARDHOLDER
-    rootPath: $
-    fields:
-    ST_LINE1: $.cardHolder.address.line1
-    ST_LINE2: $.cardHolder.address.line2
-    CITY: $.cardHolder.address.city
-    ST: $.cardHolder.address.state
-    CNTRY_NAM: $.cardHolder.address.country
-    POST_CD: $.cardHolder.address.postalCode
-    ADDR_STAT: $.clearingStatus.eligible
+      - type: CARDHOLDER
+        rootPath: $
+        fields:
+          ST_LINE1: $.cardHolder.address.line1
+          ST_LINE2: $.cardHolder.address.line2
+          CITY: $.cardHolder.address.city
+          ST: $.cardHolder.address.state
+          CNTRY_NAM: $.cardHolder.address.country
+          POST_CD: $.cardHolder.address.postalCode
+          ADDR_STAT: $.clearingStatus.eligible
 
-  - type: MERCHANT
-    rootPath: $
-    fields:
-    ST_LINE1: $.merchant.address.line1
-    ST_LINE2: $.merchant.address.line2
-    CITY: $.merchant.address.city
-    ST: $.merchant.address.state
-    CNTRY_NAM: $.merchant.address.country
-    POST_CD: $.merchant.address.postalCode
-    ADDR_STAT: $.clearingStatus.responseReasonCode
+      - type: MERCHANT
+        rootPath: $
+        fields:
+          ST_LINE1: $.merchant.address.line1
+          ST_LINE2: $.merchant.address.line2
+          CITY: $.merchant.address.city
+          ST: $.merchant.address.state
+          CNTRY_NAM: $.merchant.address.country
+          POST_CD: $.merchant.address.postalCode
+          ADDR_STAT: $.clearingStatus.responseReasonCode
 
-- tableName: CLEARING
-  order: 5
-  type: clearing
-  parentIdField: TRAN_ID
-  mandatory:
+  - tableName: CLEARING
+    order: 5
+    type: clearing
+    parentIdField: TRAN_ID
 
-  - TRAN_ID
+    mandatory:
+      - TRAN_ID
 
-  mapping:
-  TRAN_ID: $.clearingId
-  CLRST: $.clearing.status
-  CLRDT: $.clearing.clearingDate
-  SWTDT: $.clearing.switchDate
+    mapping:
+      TRAN_ID: $.clearingId
+      CLRST: $.clearing.status
+      CLRDT: $.clearing.clearingDate
+      SWTDT: $.clearing.switchDate
