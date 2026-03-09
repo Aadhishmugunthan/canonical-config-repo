@@ -12,10 +12,10 @@ tables:
   - TRAN_TYPE
 
   mapping:
-  TRAN_ID: $.authorizationId
+  TRAN_ID: $.clearingId
   TRAN_TYPE: $.transactionType
-  CUR_STAT: $.authorizationStatus.responseReasonCode
-  ORIG_STAT: $.authorizationStatus.eligible
+  CUR_STAT: $.clearingStatus.responseReasonCode
+  ORIG_STAT: $.clearingStatus.eligible
   ACCT_NUM: $.cardAccountNumber
   NTWRK_CD: $.network
   NTWRK_RESP_CD: $.brand
@@ -27,8 +27,8 @@ tables:
   TRANFR_ACPT_ID: $.partnerId
   CORLTN_ID: $.correlationId
   TRAN_CRTE_DT: $.transactionLocalDateTime
-  TRAN_AMT: $.authorizationAmount.value
-  TRAN_CRNCY: $.authorizationAmount.currency
+  TRAN_AMT: $.clearingAmount.value
+  TRAN_CRNCY: $.clearingAmount.currency
   PYMT_MTHD: $.paymentMethod
   PYMT_PURP: $.paymentPurpose
 
@@ -41,15 +41,12 @@ tables:
   - TRAN_ID
 
   mapping:
-  TRAN_ID: $.authorizationId
+  TRAN_ID: $.clearingId
   TRAN_CRTE_DT: $.transactionLocalDateTime
   PAYMT_REF: $.referenceId
   UNQ_TRAN_REF: $.correlationId
-  CRDTYCD: $.cardTypeCode
-  POSPERAT: $.posEntryMode
-  CRDTYCDDES: $.cardTypeDescription
-  TRAN_AMT: $.authorizationAmount.value
-  TRAN_CRNCY: $.authorizationAmount.currency
+  TRAN_AMT: $.clearingAmount.value
+  TRAN_CRNCY: $.clearingAmount.currency
   AUTH_CD: $.authorizationCode
   RESP_CD: $.responseCode
 
@@ -63,7 +60,7 @@ tables:
   - TRAN_ID
 
   mapping:
-  TRAN_ID: $.authorizationId
+  TRAN_ID: $.clearingId
   TRAN_CRTE_DT: $.transactionLocalDateTime
   SEND_FIRST_NAM: $.cardHolder.firstName
   SEND_LST_NAM: $.cardHolder.lastName
@@ -96,7 +93,7 @@ tables:
     ST_LINE1: $.institution
     CITY: $.country
     CNTRY_NAM: $.country
-    POST_CD: $.authorizationAmount.currency
+    ADDR_STAT: $.clearingStatus.eligible
     ADDR_STAT: $.paymentMethod
 
   - type: CARDHOLDER
@@ -108,7 +105,7 @@ tables:
     ST: $.cardHolder.address.state
     CNTRY_NAM: $.cardHolder.address.country
     POST_CD: $.cardHolder.address.postalCode
-    ADDR_STAT: $.authorizationStatus.eligible
+    ADDR_STAT: $.clearingStatus.eligible
 
   - type: MERCHANT
     rootPath: $
@@ -119,7 +116,7 @@ tables:
     ST: $.merchant.address.state
     CNTRY_NAM: $.merchant.address.country
     POST_CD: $.merchant.address.postalCode
-    ADDR_STAT: $.authorizationStatus.responseReasonCode
+    ADDR_STAT: $.clearingStatus.responseReasonCode
 
 - tableName: CLEARING
   order: 5
@@ -130,7 +127,7 @@ tables:
   - TRAN_ID
 
   mapping:
-  TRAN_ID: $.authorizationId
+  TRAN_ID: $.clearingId
   CLRST: $.clearing.status
   CLRDT: $.clearing.clearingDate
   SWTDT: $.clearing.switchDate
