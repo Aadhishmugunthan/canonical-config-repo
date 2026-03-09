@@ -1,6 +1,6 @@
 ---
 
-# CLEARING Event Rules - Complete Set
+# CLEARING Event Rules
 
 # Rule 1: Validate Required Metadata
 
@@ -35,13 +35,12 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring CLEARING event with empty payload: ' + envelope.getEventId())"
 
-
 # Rule 4: Validate Clearing Status
 
 - name: "CLEARING - Validate Clearing Status"
   description: "Ignore events where clearing status is missing"
   priority: 2
-  condition: "!eventPayload.contains('"status"') || eventPayload.contains('"status":null') || eventPayload.contains('"status":""')"
+  condition: '!eventPayload.contains(""status"") || eventPayload.contains(""status":null") || eventPayload.contains(""status":""")'
   actions:
 
   - "envelope.setIgnore(true)"
@@ -52,7 +51,7 @@
 - name: "CLEARING - Validate Clearing Date"
   description: "Ignore events where clearing date is missing"
   priority: 2
-  condition: "!eventPayload.contains('clearingDate') || eventPayload.contains('"clearingDate":null') || eventPayload.contains('"clearingDate":""')"
+  condition: '!eventPayload.contains("clearingDate") || eventPayload.contains(""clearingDate":null") || eventPayload.contains(""clearingDate":""")'
   actions:
 
   - "envelope.setIgnore(true)"
@@ -63,7 +62,7 @@
 - name: "CLEARING - Validate Switch Date"
   description: "Ignore events where switchDate is missing"
   priority: 2
-  condition: "!eventPayload.contains('switchDate') || eventPayload.contains('"switchDate":null') || eventPayload.contains('"switchDate":""')"
+  condition: '!eventPayload.contains("switchDate") || eventPayload.contains(""switchDate":null") || eventPayload.contains(""switchDate":""")'
   actions:
 
   - "envelope.setIgnore(true)"
@@ -85,10 +84,10 @@
 - name: "CLEARING - Default Status"
   description: "Set clearing status to PENDING if missing"
   priority: 3
-  condition: "!eventPayload.contains('"status"') || eventPayload.contains('"status":""')"
+  condition: '!eventPayload.contains(""status"") || eventPayload.contains(""status":""")'
   actions:
 
-  - "envelope.setEventPayload(eventPayload.replaceAll('"status":"[^"]*"', '"status":"PENDING"'))"
+  - "envelope.setEventPayload(eventPayload.replaceAll("\"status\":\"[^\"]*\"", "\"status\":\"PENDING\""))"
   - "System.out.println('🔧 Rule: Defaulted clearing status to PENDING for event: ' + envelope.getEventId())"
 
 # Rule 9: Validate Regulatory Region
