@@ -11,7 +11,7 @@
   actions:
 
   - "envelope.setIgnore(true)"
-  * "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing metadata: ' + envelope.getEventId())"
+  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing metadata: ' + envelope.getEventId())"
 
 # Rule 2: Ignore Test Events
 
