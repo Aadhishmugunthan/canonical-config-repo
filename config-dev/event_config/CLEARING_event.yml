@@ -129,7 +129,7 @@ tables:
     POST_CD: $.merchant.address.postalCode
     ADDR_STAT: $.authorizationStatus.responseReasonCode
 
-# ===== TABLE 5 (NEW CLEARING TABLE) =====
+# ===== TABLE 5 =====
 
 * tableName: CLEARING
   order: 5
