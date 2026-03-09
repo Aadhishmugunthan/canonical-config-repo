@@ -3,15 +3,13 @@ description: Clearing Service transactions
 
 tables:
 
-# ===== TABLE 1 =====
-
-* tableName: SEND_TRANSACTIONS
+- tableName: SEND_TRANSACTIONS
   order: 1
   type: main
   mandatory:
 
-  * TRAN_ID
-  * TRAN_TYPE
+  - TRAN_ID
+  - TRAN_TYPE
 
   mapping:
   TRAN_ID: $.authorizationId
@@ -34,15 +32,13 @@ tables:
   PYMT_MTHD: $.paymentMethod
   PYMT_PURP: $.paymentPurpose
 
-# ===== TABLE 2 =====
-
-* tableName: SEND_TRAN_DTL
+- tableName: SEND_TRAN_DTL
   order: 2
   type: detail
   parentIdField: TRAN_ID
   mandatory:
 
-  * TRAN_ID
+  - TRAN_ID
 
   mapping:
   TRAN_ID: $.authorizationId
@@ -57,16 +53,14 @@ tables:
   AUTH_CD: $.authorizationCode
   RESP_CD: $.responseCode
 
-# ===== TABLE 3 =====
-
-* tableName: SEND_RECIP_DTL
+- tableName: SEND_RECIP_DTL
   order: 3
   type: recipient
   parentIdField: TRAN_ID
   autoGenerateId: true
   mandatory:
 
-  * TRAN_ID
+  - TRAN_ID
 
   mapping:
   TRAN_ID: $.authorizationId
@@ -88,9 +82,7 @@ tables:
   RECV_CNTRY_NAM: $.merchant.address.country
   RECV_POST_CD: $.merchant.address.postalCode
 
-# ===== TABLE 4 =====
-
-* tableName: SEND_TRAN_ADDR_DTL
+- tableName: SEND_TRAN_ADDR_DTL
   order: 4
   type: address
   parentIdField: TRAN_ID
@@ -98,7 +90,7 @@ tables:
 
   addressTypes:
 
-  * type: INSTITUTION
+  - type: INSTITUTION
     rootPath: $
     fields:
     ST_LINE1: $.institution
@@ -107,7 +99,7 @@ tables:
     POST_CD: $.authorizationAmount.currency
     ADDR_STAT: $.paymentMethod
 
-  * type: CARDHOLDER
+  - type: CARDHOLDER
     rootPath: $
     fields:
     ST_LINE1: $.cardHolder.address.line1
@@ -118,7 +110,7 @@ tables:
     POST_CD: $.cardHolder.address.postalCode
     ADDR_STAT: $.authorizationStatus.eligible
 
-  * type: MERCHANT
+  - type: MERCHANT
     rootPath: $
     fields:
     ST_LINE1: $.merchant.address.line1
@@ -129,15 +121,13 @@ tables:
     POST_CD: $.merchant.address.postalCode
     ADDR_STAT: $.authorizationStatus.responseReasonCode
 
-# ===== TABLE 5 =====
-
-* tableName: CLEARING
+- tableName: CLEARING
   order: 5
   type: clearing
   parentIdField: TRAN_ID
   mandatory:
 
-  * TRAN_ID
+  - TRAN_ID
 
   mapping:
   TRAN_ID: $.authorizationId
