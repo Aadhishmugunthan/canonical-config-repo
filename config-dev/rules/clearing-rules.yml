@@ -35,16 +35,16 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring CLEARING event with empty payload: ' + envelope.getEventId())"
 
-# Rule 4: Ignore if Authorization ID Missing
+# Rule 4: Ignore if Clearing ID Missing
 
-- name: "CLEARING - Ignore if Authorization ID Missing"
-  description: "Ignore events where authorizationId is missing"
+- name: "CLEARING - Ignore if Clearing ID Missing"
+  description: "Ignore events where clearingId is missing"
   priority: 1
-  condition: "!eventPayload.contains('authorizationId') || eventPayload.contains('"authorizationId":null') || eventPayload.contains('"authorizationId":""')"
+  condition: "!eventPayload.contains('clearingId') || eventPayload.contains('"clearingId":null') || eventPayload.contains('"clearingId":""')"
   actions:
 
   - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing authorizationId: ' + envelope.getEventId())"
+  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearingId: ' + envelope.getEventId())"
 
 # Rule 5: Validate Clearing Status
 
