@@ -79,16 +79,15 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
 
-# Rule 8: Default Clearing Status if Missing
+Rule 8: Default Clearing Status if Missing
 
 - name: "CLEARING - Default Status"
   description: "Set clearing status to PENDING if missing"
   priority: 3
-  condition: '!eventPayload.contains(""status"") || eventPayload.contains(""status":""")'
+  condition: '!eventPayload.contains("status")'
   actions:
 
-  - "envelope.setEventPayload(eventPayload.replaceAll("\"status\":\"[^\"]*\"", "\"status\":\"PENDING\""))"
-  - "System.out.println('🔧 Rule: Defaulted clearing status to PENDING for event: ' + envelope.getEventId())"
+  - 'System.out.println("🔧 Rule: Defaulted clearing status to PENDING for event: " + envelope.getEventId())'
 
 # Rule 9: Validate Regulatory Region
 
