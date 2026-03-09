@@ -79,17 +79,7 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
 
-Rule 8: Default Clearing Status if Missing
-
-- name: "CLEARING - Default Status"
-  description: "Set clearing status to PENDING if missing"
-  priority: 3
-  condition: '!eventPayload.contains("status")'
-  actions:
-
-  - 'System.out.println("🔧 Rule: Defaulted clearing status to PENDING for event: " + envelope.getEventId())'
-
-# Rule 9: Validate Regulatory Region
+# Rule 8: Validate Regulatory Region
 
 - name: "CLEARING - Validate Regulatory Region"
   description: "Allow only STL and ATL regulatory regions"
