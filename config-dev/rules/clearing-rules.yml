@@ -35,18 +35,8 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring CLEARING event with empty payload: ' + envelope.getEventId())"
 
-# Rule 4: Ignore if Clearing ID Missing
 
-- name: "CLEARING - Ignore if Clearing ID Missing"
-  description: "Ignore events where clearingId is missing"
-  priority: 1
-  condition: "!eventPayload.contains('clearingId') || eventPayload.contains('"clearingId":null') || eventPayload.contains('"clearingId":""')"
-  actions:
-
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearingId: ' + envelope.getEventId())"
-
-# Rule 5: Validate Clearing Status
+# Rule 4: Validate Clearing Status
 
 - name: "CLEARING - Validate Clearing Status"
   description: "Ignore events where clearing status is missing"
@@ -57,7 +47,7 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearing status: ' + envelope.getEventId())"
 
-# Rule 6: Validate Clearing Date
+# Rule 5: Validate Clearing Date
 
 - name: "CLEARING - Validate Clearing Date"
   description: "Ignore events where clearing date is missing"
@@ -68,7 +58,7 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearingDate: ' + envelope.getEventId())"
 
-# Rule 7: Validate Switch Date
+# Rule 6: Validate Switch Date
 
 - name: "CLEARING - Validate Switch Date"
   description: "Ignore events where switchDate is missing"
@@ -79,7 +69,7 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing switchDate: ' + envelope.getEventId())"
 
-# Rule 8: Validate Event Source
+# Rule 7: Validate Event Source
 
 - name: "CLEARING - Validate Event Source"
   description: "Ignore events from non-clearing sources"
@@ -90,7 +80,7 @@
   - "envelope.setIgnore(true)"
   - "System.out.println('⚠️ Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
 
-# Rule 9: Default Clearing Status if Missing
+# Rule 8: Default Clearing Status if Missing
 
 - name: "CLEARING - Default Status"
   description: "Set clearing status to PENDING if missing"
@@ -101,7 +91,7 @@
   - "envelope.setEventPayload(eventPayload.replaceAll('"status":"[^"]*"', '"status":"PENDING"'))"
   - "System.out.println('🔧 Rule: Defaulted clearing status to PENDING for event: ' + envelope.getEventId())"
 
-# Rule 10: Validate Regulatory Region
+# Rule 9: Validate Regulatory Region
 
 - name: "CLEARING - Validate Regulatory Region"
   description: "Allow only STL and ATL regulatory regions"
