@@ -43,7 +43,9 @@
     - "envelope.setIgnore(true)"
 
 - name: "NVS - Force SW_SER_NUM numeric"
+  description: "Set switchSerialNumber to 0000 if non-numeric"
   priority: 3
-  condition: "eventPayload.contains('switchSerialNumber') && !eventPayload.matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
+  condition: "envelope.getEventPayload().contains('switchSerialNumber') && !envelope.getEventPayload().matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('Rule Applied: SW_SER_NUM corrected')"
