@@ -1,100 +1,90 @@
----
-
-# CLEARING Event Rules
+rules:
 
 # Rule 1: Validate Required Metadata
-
 - name: "CLEARING - Validate Required Metadata"
   description: "Ensure eventMetadata is not null or empty"
   priority: 2
   condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring CLEARING event with missing metadata: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing metadata: ' + envelope.getEventId())"
 
 # Rule 2: Ignore Test Events
-
 - name: "CLEARING - Ignore Test Events"
   description: "Ignore events coming from test environments"
   priority: 1
   condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring TEST CLEARING event: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('🧪 Rule: Ignoring TEST CLEARING event: ' + envelope.getEventId())"
 
 # Rule 3: Validate Event Payload
-
 - name: "CLEARING - Validate Payload"
   description: "Ensure clearing payload is not empty"
   priority: 2
   condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring CLEARING event with empty payload: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with empty payload: ' + envelope.getEventId())"
 
 # Rule 4: Validate Clearing Status
-
 - name: "CLEARING - Validate Clearing Status"
   description: "Ignore events where clearing status is missing"
   priority: 2
-  condition: '!eventPayload.contains(""status"") || eventPayload.contains(""status":null") || eventPayload.contains(""status":""")'
+  condition: "!envelope.getEventPayload().contains('status')"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing clearing status for event: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearing status: ' + envelope.getEventId())"
 
 # Rule 5: Validate Clearing Date
-
 - name: "CLEARING - Validate Clearing Date"
   description: "Ignore events where clearing date is missing"
   priority: 2
-  condition: '!eventPayload.contains("clearingDate") || eventPayload.contains(""clearingDate":null") || eventPayload.contains(""clearingDate":""")'
+  condition: "!envelope.getEventPayload().contains('clearingDate')"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing clearingDate for event: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing clearingDate: ' + envelope.getEventId())"
 
 # Rule 6: Validate Switch Date
-
 - name: "CLEARING - Validate Switch Date"
   description: "Ignore events where switchDate is missing"
   priority: 2
-  condition: '!eventPayload.contains("switchDate") || eventPayload.contains(""switchDate":null") || eventPayload.contains(""switchDate":""")'
+  condition: "!envelope.getEventPayload().contains('switchDate')"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing switchDate for event: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event with missing switchDate: ' + envelope.getEventId())"
 
 # Rule 7: Validate Event Source
-
 - name: "CLEARING - Validate Event Source"
   description: "Ignore events from non-clearing sources"
   priority: 1
-  condition: "eventSource == null || (!eventSource.toUpperCase().contains('CLEAR'))"
+  condition: "eventSource == null || !eventSource.toUpperCase().contains('CLEAR')"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid event source ' + eventSource + ' for event: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
 
 # Rule 8: Validate Regulatory Region
-
 - name: "CLEARING - Validate Regulatory Region"
   description: "Allow only STL and ATL regulatory regions"
   priority: 1
   condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
   actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
-  - "envelope.setIgnore(true)"
-  - "System.out.println('⚠️ Rule: Ignoring CLEARING event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
-# Rule 9: Default SW_SER_NUM to 0000 if Non-Numeric
-- name: "AVS - Default SW_SER_NUM to 0000 if Non-Numeric"
-  description: "Ensure switchSerialNumber is numeric, otherwise default to 0000"
+# Rule 9: Default SW_SER_NUM
+- name: "CLEARING - Default SW_SER_NUM"
+  description: "Ensure switchSerialNumber is numeric"
   priority: 3
-  condition: "eventPayload.contains('switchSerialNumber') && eventPayload.contains('\"switchSerialNumber\":\"') && !eventPayload.matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
+  condition: "envelope.getEventPayload().contains('switchSerialNumber') && !envelope.getEventPayload().matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"switchSerialNumber\":\"[^\"]*\"', '\"switchSerialNumber\":\"0000\"'))"
-    - "System.out.println('🔧 Rule: Defaulted SW_SER_NUM to 0000 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('Rule: switchSerialNumber defaulted to 0000 for event: ' + envelope.getEventId())"
