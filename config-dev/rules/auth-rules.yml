@@ -110,3 +110,12 @@
   actions:
     - "envelope.setEventPayload(eventPayload.replaceAll('\"responseCode\":\"[^\"]*\"', '\"responseCode\":\"UNKNOWN\"'))"
     - "System.out.println('🔧 Rule: Defaulted responseCode to UNKNOWN for event: ' + envelope.getEventId())"
+
+# Rule 12: Default SW_SER_NUM to 0000 if Non-Numeric
+- name: "AUTH - Default SW_SER_NUM to 0000 if Non-Numeric"
+  description: "Ensure switchSerialNumber is numeric, otherwise default to 0000"
+  priority: 3
+  condition: "eventPayload.contains('switchSerialNumber') && eventPayload.contains('\"switchSerialNumber\":\"') && !eventPayload.matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
+  actions:
+    - "envelope.setEventPayload(eventPayload.replaceAll('\"switchSerialNumber\":\"[^\"]*\"', '\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('🔧 Rule: Defaulted SW_SER_NUM to 0000 for event: ' + envelope.getEventId())"
