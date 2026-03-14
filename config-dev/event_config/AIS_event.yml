@@ -25,6 +25,7 @@ tables:
     ORIG_INST_ID: $.partnerId
     ORIG_INST_NAM: $.partnerName
     TRANFR_ACPT_NAM: $.institution
+    SW_SER_NUM: $.switchSerialNumber
     TRANFR_ACPT_ID: $.partnerId
     CORLTN_ID: $.correlationId
     TRAN_CRTE_DT: $.transactionLocalDateTime
