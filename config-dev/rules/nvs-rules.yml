@@ -67,9 +67,10 @@ rules:
     - "System.out.println('⚠️  Rule: Ignoring event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
 
+# RULE 8: 
 - name: "NVS - Force SW_SER_NUM numeric"
   priority: 3
-  condition: "eventPayload.contains('switchSerialNumber\":\"AA')"
+  condition: "!eventPayload.matches('.*switchSerialNumber\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replace('switchSerialNumber\":\"AA','switchSerialNumber\":\"0000'))"
-    - "System.out.println('RULE APPLIED: SW_SER_NUM corrected')"
+    - "envelope.setEventPayload(eventPayload.replaceAll('switchSerialNumber\":\"[^\"]*\"','switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('🔧 Rule: SW_SER_NUM defaulted to 0000')"
