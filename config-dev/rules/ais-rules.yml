@@ -1,6 +1,4 @@
----
-# AIS Event Rules - Complete Set
-
+rules:
 
 # Rule 1: Validate Required Metadata
 - name: "AIS - Validate Required Metadata"
@@ -9,7 +7,8 @@
   condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event with missing metadata: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring event with missing metadata: ' + envelope.getEventId())"
+
 
 # Rule 2: Ignore Test Events
 - name: "AIS - Ignore Test Events"
@@ -18,7 +17,8 @@
   condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('🧪 Rule: Ignoring TEST event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring TEST event: ' + envelope.getEventId())"
+
 
 # Rule 3: Validate Event Payload
 - name: "AIS - Validate Payload"
@@ -27,49 +27,54 @@
   condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event with empty payload: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring event with empty payload: ' + envelope.getEventId())"
 
-# Rule 4: Default ACQ_ICA to 0 if Non-Numeric
-- name: "AIS - Default ACQ_ICA to 0 if Non-Numeric"
-  description: "Set brand to 0 if value is non-numeric"
+
+# Rule 4: Default brand if Non-Numeric
+- name: "AIS - Default Brand Numeric"
+  description: "Set brand to 0 if non-numeric"
   priority: 3
-  condition: "eventPayload.contains('brand') && eventPayload.contains('\"brand\":\"') && !eventPayload.matches('.*\"brand\":\"[0-9]+\".*')"
+  condition: "envelope.getEventPayload().contains('brand') && !envelope.getEventPayload().matches('.*\"brand\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"brand\":\"[^\"]*\"', '\"brand\":\"0\"'))"
-    - "System.out.println('🔧 Rule: Set ACQ_ICA (brand) to default value 0 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"brand\":\"[^\"]*\"','\"brand\":\"0\"'))"
+    - "System.out.println('Rule: Brand corrected to 0 for event: ' + envelope.getEventId())"
 
-# Rule 5: Ignore if Transaction ID Missing
-- name: "AIS - Ignore if Transaction ID Missing"
-  description: "Ignore events where accountInformationId is missing or null"
+
+# Rule 5: Ignore if accountInformationId Missing
+- name: "AIS - Missing Transaction ID"
+  description: "Ignore events where accountInformationId is missing"
   priority: 1
-  condition: "!eventPayload.contains('accountInformationId') || eventPayload.contains('\"accountInformationId\":null') || eventPayload.contains('\"accountInformationId\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('accountInformationId')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event with missing accountInformationId: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing accountInformationId for event: ' + envelope.getEventId())"
 
-# Rule 6: Validate Event Source (NEW)
+
+# Rule 6: Validate Event Source
 - name: "AIS - Validate Event Source"
-  description: "Ignore events from non-allowed event sources"
+  description: "Ignore events from invalid event sources"
   priority: 1
   condition: "eventSource == null || (!eventSource.toUpperCase().contains('AVS') && !eventSource.toUpperCase().contains('AIS') && !eventSource.toUpperCase().contains('NVS'))"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid event source ' + eventSource + ' for event: ' + envelope.getEventId())"
 
-# Rule 7: Validate Regulatory Region (NEW)
+
+# Rule 7: Validate Regulatory Region
 - name: "AIS - Validate Regulatory Region"
-  description: "Ignore events from non-allowed regulatory regions (STL, ATL only)"
+  description: "Allow only STL or ATL regions"
   priority: 1
   condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
-# Rule: Default SW_SER_NUM to 0000 if Non-Numeric
-- name: "AIS - Default SW_SER_NUM to 0000 if Non-Numeric"
-  description: "Ensure switchSerialNumber is numeric, otherwise default to 0000"
+
+# Rule 8: Default SW_SER_NUM
+- name: "AIS - Force SW_SER_NUM numeric"
+  description: "Set switchSerialNumber to 0000 if non-numeric"
   priority: 3
-  condition: "eventPayload.contains('switchSerialNumber') && eventPayload.contains('\"switchSerialNumber\":\"') && !eventPayload.matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
+  condition: "envelope.getEventPayload().contains('switchSerialNumber') && !envelope.getEventPayload().matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"switchSerialNumber\":\"[^\"]*\"', '\"switchSerialNumber\":\"0000\"'))"
-    - "System.out.println('🔧 Rule: Defaulted SW_SER_NUM to 0000 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('Rule Applied: SW_SER_NUM corrected')"
