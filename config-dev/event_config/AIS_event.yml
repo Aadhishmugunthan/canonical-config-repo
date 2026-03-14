@@ -81,7 +81,6 @@ tables:
 
   ERR_CD_DESC: $.sendingAccountEligible.responseReasonDetail
 
-  NON_FIN_TXN: 1
 
 # =========================================================
 
