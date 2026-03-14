@@ -67,11 +67,11 @@
     - "System.out.println('⚠️  Rule: Ignoring event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
 
-# Rule: Default SW_SER_NUM to 0000 if Non-Numeric
+# Rule 8: Default SW_SER_NUM to 0000 if Non-Numeric
 - name: "NVS - Default SW_SER_NUM to 0000 if Non-Numeric"
   description: "Ensure switchSerialNumber is numeric, otherwise default to 0000"
   priority: 3
-  condition: "!eventPayload.matches('.*switchSerialNumber\":\"[0-9]+\".*')"
+  condition: "!eventPayload.matches('.*\\\\\"switchSerialNumber\\\\\":\\\\\"[0-9]+\\\\\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('switchSerialNumber\":\"[^\"]*\"', 'switchSerialNumber\":\"0000\"'))"
+    - "envelope.setEventPayload(eventPayload.replaceAll('\\\\\"switchSerialNumber\\\\\":\\\\\"[^\\\\\"]*\\\\\"', '\\\\\"switchSerialNumber\\\\\":\\\\\"0000\\\\\"'))"
     - "System.out.println('🔧 Rule Applied: Default SW_SER_NUM to 0000 for event: ' + envelope.getEventId())"
