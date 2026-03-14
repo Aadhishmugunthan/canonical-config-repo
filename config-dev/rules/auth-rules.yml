@@ -1,6 +1,4 @@
----
-# AUTHORIZATION Event Rules - Complete Set
-
+rules:
 
 # Rule 1: Validate Required Metadata
 - name: "AUTH - Validate Required Metadata"
@@ -9,7 +7,7 @@
   condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event with missing metadata: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring event with missing metadata: ' + envelope.getEventId())"
 
 
 # Rule 2: Ignore Test Events
@@ -19,7 +17,7 @@
   condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('🧪 Rule: Ignoring TEST event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring TEST event: ' + envelope.getEventId())"
 
 
 # Rule 3: Validate Event Payload
@@ -29,93 +27,94 @@
   condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event with empty payload: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring event with empty payload: ' + envelope.getEventId())"
 
 
-# Rule 4: Default ACQ_ICA to 0 if Non-Numeric
-- name: "AUTH - Default ACQ_ICA to 0 if Non-Numeric"
-  description: "Set brand to 0 if value is non-numeric"
+# Rule 4: Default Brand if Non-Numeric
+- name: "AUTH - Default Brand Numeric"
+  description: "Set brand to 0 if non-numeric"
   priority: 3
-  condition: "eventPayload.contains('brand') && eventPayload.contains('\"brand\":\"') && !eventPayload.matches('.*\"brand\":\"[0-9]+\".*')"
+  condition: "envelope.getEventPayload().contains('brand') && !envelope.getEventPayload().matches('.*\"brand\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"brand\":\"[^\"]*\"', '\"brand\":\"0\"'))"
-    - "System.out.println('🔧 Rule: Set ACQ_ICA (brand) to default value 0 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"brand\":\"[^\"]*\"','\"brand\":\"0\"'))"
+    - "System.out.println('Rule: Brand corrected to 0 for event: ' + envelope.getEventId())"
 
 
 # Rule 5: Ignore if Authorization ID Missing
-- name: "AUTH - Ignore if Authorization ID Missing"
+- name: "AUTH - Missing Authorization ID"
   description: "Ignore events where authorizationId is missing"
   priority: 1
-  condition: "!eventPayload.contains('authorizationId') || eventPayload.contains('\"authorizationId\":null') || eventPayload.contains('\"authorizationId\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('authorizationId')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event with missing authorizationId: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing authorizationId for event: ' + envelope.getEventId())"
 
 
 # Rule 6: Validate Event Source
 - name: "AUTH - Validate Event Source"
-  description: "Ignore events from non-allowed sources"
+  description: "Ignore events from invalid sources"
   priority: 1
-  condition: "eventSource == null || (!eventSource.toUpperCase().contains('AUTH'))"
+  condition: "eventSource == null || !eventSource.toUpperCase().contains('AUTH')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid event source ' + eventSource + ' for event: ' + envelope.getEventId())"
 
 
 # Rule 7: Validate Regulatory Region
 - name: "AUTH - Validate Regulatory Region"
-  description: "Ignore events from non-allowed regulatory regions (STL, ATL only)"
+  description: "Allow only STL or ATL"
   priority: 1
   condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
 
 # Rule 8: Validate Authorization Amount
 - name: "AUTH - Validate Authorization Amount"
   description: "Ignore events where authorizationAmount is missing or zero"
   priority: 2
-  condition: "!eventPayload.contains('authorizationAmount') || eventPayload.contains('\"value\":null') || eventPayload.contains('\"value\":0') || eventPayload.contains('\"value\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('authorizationAmount')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event with invalid authorizationAmount for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid authorizationAmount for event: ' + envelope.getEventId())"
 
 
 # Rule 9: Validate Authorization Currency
 - name: "AUTH - Validate Authorization Currency"
   description: "Ignore events where currency is missing"
   priority: 2
-  condition: "!eventPayload.contains('\"currency\"') || eventPayload.contains('\"currency\":null') || eventPayload.contains('\"currency\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('currency')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event with missing currency for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing currency for event: ' + envelope.getEventId())"
 
 
 # Rule 10: Validate Card Account Number
 - name: "AUTH - Validate Card Account"
   description: "Ignore events where cardAccountNumber is missing"
   priority: 2
-  condition: "!eventPayload.contains('cardAccountNumber') || eventPayload.contains('\"cardAccountNumber\":null') || eventPayload.contains('\"cardAccountNumber\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('cardAccountNumber')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️ Rule: Ignoring event with missing cardAccountNumber for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing cardAccountNumber for event: ' + envelope.getEventId())"
 
 
-# Rule 11: Default Response Code if Missing
-- name: "AUTH - Default Response Code if Missing"
-  description: "Set responseCode to UNKNOWN if absent"
+# Rule 11: Default Response Code
+- name: "AUTH - Default Response Code"
+  description: "Set responseCode to UNKNOWN if missing"
   priority: 3
-  condition: "!eventPayload.contains('responseCode') || eventPayload.contains('\"responseCode\":null') || eventPayload.contains('\"responseCode\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('responseCode')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"responseCode\":\"[^\"]*\"', '\"responseCode\":\"UNKNOWN\"'))"
-    - "System.out.println('🔧 Rule: Defaulted responseCode to UNKNOWN for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replace('}',' ,\"responseCode\":\"UNKNOWN\"}'))"
+    - "System.out.println('Rule: responseCode defaulted for event: ' + envelope.getEventId())"
 
-# Rule 12: Default SW_SER_NUM to 0000 if Non-Numeric
-- name: "NVS - Default SW_SER_NUM to 0000 if Non-Numeric"
-  description: "Ensure switchSerialNumber is numeric, otherwise default to 0000"
+
+# Rule 12: Default SW_SER_NUM
+- name: "AUTH - Default SW_SER_NUM"
+  description: "Ensure switchSerialNumber is numeric"
   priority: 3
-  condition: "!eventPayload.matches('.*\\\\\"switchSerialNumber\\\\\":\\\\\"[0-9]+\\\\\".*')"
+  condition: "envelope.getEventPayload().contains('switchSerialNumber') && !envelope.getEventPayload().matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\\\\\"switchSerialNumber\\\\\":\\\\\"[^\\\\\"]*\\\\\"', '\\\\\"switchSerialNumber\\\\\":\\\\\"0000\\\\\"'))"
-    - "System.out.println('🔧 Rule: Defaulted SW_SER_NUM to 0000 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('Rule: switchSerialNumber defaulted to 0000 for event: ' + envelope.getEventId())"
