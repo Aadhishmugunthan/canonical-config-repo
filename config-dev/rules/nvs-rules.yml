@@ -1,77 +1,49 @@
----
-# NVS Event Rules - Complete Set
+# NVS Event Rules
 
-
-
-# Rule 1: Validate Required Metadata
 - name: "NVS - Validate Required Metadata"
-  description: "Ensure eventMetadata is not null or empty"
   priority: 2
   condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event with missing metadata: ' + envelope.getEventId())"
 
-# Rule 2: Ignore Test Events
 - name: "NVS - Ignore Test Events"
-  description: "Ignore events from test environments"
   priority: 1
   condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('🧪 Rule: Ignoring TEST event: ' + envelope.getEventId())"
 
-# Rule 3: Validate Event Payload
 - name: "NVS - Validate Payload"
-  description: "Ensure event payload is not empty"
   priority: 2
-  condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
+  condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event with empty payload: ' + envelope.getEventId())"
 
-# Rule 4: Default ACQ_ICA to 0 if Non-Numeric
-- name: "NVS - Default ACQ_ICA to 0 if Non-Numeric"
-  description: "Set acquiringICA to 0 if value is non-numeric"
+- name: "NVS - Default ACQ_ICA"
   priority: 3
-  condition: "eventPayload.contains('acquiringICA') && eventPayload.contains('\"acquiringICA\":\"') && !eventPayload.matches('.*\"acquiringICA\":\"[0-9]+\".*')"
+  condition: "eventPayload.contains('acquiringICA') && !eventPayload.matches('.*\"acquiringICA\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"acquiringICA\":\"[^\"]*\"', '\"acquiringICA\":\"0\"'))"
-    - "System.out.println('🔧 Rule: Set ACQ_ICA to default value 0 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(eventPayload.replaceAll('\"acquiringICA\":\"[^\"]*\"','\"acquiringICA\":\"0\"'))"
 
-# Rule 5: Ignore if Transaction ID Missing
-- name: "NVS - Ignore if Transaction ID Missing"
-  description: "Ignore events where nvsTranId is missing or null"
+- name: "NVS - Missing Transaction ID"
   priority: 1
-  condition: "!eventPayload.contains('nvsTranId') || eventPayload.contains('\"nvsTranId\":null') || eventPayload.contains('\"nvsTranId\":\"\"')"
+  condition: "!eventPayload.contains('nvsTranId')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event with missing nvsTranId: ' + envelope.getEventId())"
 
-# Rule 6: Validate Event Source (NEW)
 - name: "NVS - Validate Event Source"
-  description: "Ignore events from non-allowed event sources"
   priority: 1
   condition: "eventSource == null || (!eventSource.toUpperCase().contains('AVS') && !eventSource.toUpperCase().contains('AIS') && !eventSource.toUpperCase().contains('NVS'))"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
 
-# Rule 7: Validate Regulatory Region (NEW)
 - name: "NVS - Validate Regulatory Region"
-  description: "Ignore events from non-allowed regulatory regions (STL, ATL only)"
   priority: 1
   condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
-
-# RULE 8: Force SW_SER_NUM to 0000 if switchSerialNumber is non-numeric
 - name: "NVS - Force SW_SER_NUM numeric"
-  description: "Set switchSerialNumber to 0000 if value is non-numeric string"
   priority: 3
-  condition: "eventPayload.contains('\"switchSerialNumber\":\"') && !eventPayload.matches('(?s).*\"switchSerialNumber\":\"[0-9]+\".*')"
+  condition: "eventPayload.contains('switchSerialNumber') && !eventPayload.matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"switchSerialNumber\":\"[^\"]*\"', '\"switchSerialNumber\":\"0000\"'))"
-    - "System.out.println('🔧 Rule: SW_SER_NUM defaulted to 0000 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(eventPayload.replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
