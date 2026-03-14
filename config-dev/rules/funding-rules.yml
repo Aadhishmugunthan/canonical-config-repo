@@ -1,6 +1,4 @@
----
-# FUNDING Event Rules - Complete Set
-
+rules:
 
 # Rule 1: Validate Required Metadata
 - name: "FUNDING - Validate Required Metadata"
@@ -9,7 +7,7 @@
   condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event with missing metadata: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring FUNDING event with missing metadata: ' + envelope.getEventId())"
 
 
 # Rule 2: Ignore Test Events
@@ -19,7 +17,7 @@
   condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('🧪 Rule: Ignoring TEST FUNDING event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring TEST FUNDING event: ' + envelope.getEventId())"
 
 
 # Rule 3: Validate Event Payload
@@ -29,103 +27,104 @@
   condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event with empty payload: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Ignoring FUNDING event with empty payload: ' + envelope.getEventId())"
 
 
-# Rule 4: Default ACQ_ICA to 0 if Non-Numeric
-- name: "FUNDING - Default ACQ_ICA to 0 if Non-Numeric"
-  description: "Set brand to 0 if value is non-numeric"
+# Rule 4: Default Brand if Non-Numeric
+- name: "FUNDING - Default ACQ_ICA"
+  description: "Set brand to 0 if non-numeric"
   priority: 3
-  condition: "eventPayload.contains('brand') && eventPayload.contains('\"brand\":\"') && !eventPayload.matches('.*\"brand\":\"[0-9]+\".*')"
+  condition: "envelope.getEventPayload().contains('brand') && !envelope.getEventPayload().matches('.*\"brand\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"brand\":\"[^\"]*\"', '\"brand\":\"0\"'))"
-    - "System.out.println('🔧 Rule: Set ACQ_ICA (brand) to default value 0 for FUNDING event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"brand\":\"[^\"]*\"','\"brand\":\"0\"'))"
+    - "System.out.println('Rule: Brand corrected for FUNDING event: ' + envelope.getEventId())"
 
 
 # Rule 5: Ignore if Funding Transaction ID Missing
-- name: "FUNDING - Ignore if Transaction ID Missing"
-  description: "Ignore events where fundingTransactionId is missing or null"
+- name: "FUNDING - Missing Transaction ID"
+  description: "Ignore events where fundingTransactionId is missing"
   priority: 1
-  condition: "!eventPayload.contains('fundingTransactionId') || eventPayload.contains('\"fundingTransactionId\":null') || eventPayload.contains('\"fundingTransactionId\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('fundingTransactionId')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event with missing fundingTransactionId: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing fundingTransactionId for event: ' + envelope.getEventId())"
 
 
 # Rule 6: Validate Event Source
 - name: "FUNDING - Validate Event Source"
-  description: "Ignore events from non-allowed event sources"
+  description: "Ignore events from invalid sources"
   priority: 1
   condition: "eventSource == null || (!eventSource.toUpperCase().contains('FND') && !eventSource.toUpperCase().contains('FUND'))"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event from invalid source: ' + eventSource + ' for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid event source ' + eventSource + ' for event: ' + envelope.getEventId())"
 
 
 # Rule 7: Validate Regulatory Region
 - name: "FUNDING - Validate Regulatory Region"
-  description: "Ignore events from non-allowed regulatory regions (STL, ATL only)"
+  description: "Allow only STL or ATL"
   priority: 1
   condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event from invalid regulatory region: ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
 
 
 # Rule 8: Validate Funding Amount
 - name: "FUNDING - Validate Funding Amount"
-  description: "Ignore events where fundingAmount value is missing, null, or zero"
+  description: "Ignore events where fundingAmount is missing"
   priority: 2
-  condition: "!eventPayload.contains('fundingAmount') || eventPayload.contains('\"value\":null') || eventPayload.contains('\"value\":0') || eventPayload.contains('\"value\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('fundingAmount')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event with invalid fundingAmount for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Invalid fundingAmount for event: ' + envelope.getEventId())"
 
 
 # Rule 9: Validate Funding Currency
 - name: "FUNDING - Validate Funding Currency"
-  description: "Ignore events where funding currency is missing or null"
+  description: "Ignore events where currency is missing"
   priority: 2
-  condition: "!eventPayload.contains('\"currency\"') || eventPayload.contains('\"currency\":null') || eventPayload.contains('\"currency\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('currency')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event with missing currency for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing currency for event: ' + envelope.getEventId())"
 
 
 # Rule 10: Validate Funding Method
 - name: "FUNDING - Validate Funding Method"
-  description: "Ignore events where fundingMethod is missing or null"
+  description: "Ignore events where fundingMethod is missing"
   priority: 2
-  condition: "!eventPayload.contains('fundingMethod') || eventPayload.contains('\"fundingMethod\":null') || eventPayload.contains('\"fundingMethod\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('fundingMethod')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event with missing fundingMethod for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing fundingMethod for event: ' + envelope.getEventId())"
 
 
 # Rule 11: Validate Source Account URI
 - name: "FUNDING - Validate Source Account URI"
-  description: "Ignore events where sourceAccountUri is missing or null"
+  description: "Ignore events where sourceAccountUri is missing"
   priority: 2
-  condition: "!eventPayload.contains('sourceAccountUri') || eventPayload.contains('\"sourceAccountUri\":null') || eventPayload.contains('\"sourceAccountUri\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('sourceAccountUri')"
   actions:
     - "envelope.setIgnore(true)"
-    - "System.out.println('⚠️  Rule: Ignoring FUNDING event with missing sourceAccountUri for event: ' + envelope.getEventId())"
+    - "System.out.println('Rule: Missing sourceAccountUri for event: ' + envelope.getEventId())"
 
 
-# Rule 12: Default Response Code to UNKNOWN if Missing
-- name: "FUNDING - Default Response Code if Missing"
-  description: "Set responseCode to UNKNOWN if value is absent or empty"
+# Rule 12: Default Response Code
+- name: "FUNDING - Default Response Code"
+  description: "Set responseCode to UNKNOWN if missing"
   priority: 3
-  condition: "!eventPayload.contains('responseCode') || eventPayload.contains('\"responseCode\":null') || eventPayload.contains('\"responseCode\":\"\"')"
+  condition: "!envelope.getEventPayload().contains('responseCode')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"responseCode\":\"[^\"]*\"', '\"responseCode\":\"UNKNOWN\"'))"
-    - "System.out.println('🔧 Rule: Defaulted responseCode to UNKNOWN for FUNDING event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replace('}',' ,\"responseCode\":\"UNKNOWN\"}'))"
+    - "System.out.println('Rule: responseCode defaulted for event: ' + envelope.getEventId())"
 
-# Rule 13: Default SW_SER_NUM to 0000 if Non-Numeric
-- name: "FUNDING - Default SW_SER_NUM to 0000 if Non-Numeric"
-  description: "Ensure switchSerialNumber is numeric, otherwise default to 0000"
+
+# Rule 13: Default SW_SER_NUM
+- name: "FUNDING - Default SW_SER_NUM"
+  description: "Ensure switchSerialNumber is numeric"
   priority: 3
-  condition: "eventPayload.contains('switchSerialNumber') && eventPayload.contains('\"switchSerialNumber\":\"') && !eventPayload.matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
+  condition: "envelope.getEventPayload().contains('switchSerialNumber') && !envelope.getEventPayload().matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
   actions:
-    - "envelope.setEventPayload(eventPayload.replaceAll('\"switchSerialNumber\":\"[^\"]*\"', '\"switchSerialNumber\":\"0000\"'))"
-    - "System.out.println('🔧 Rule: Defaulted SW_SER_NUM to 0000 for event: ' + envelope.getEventId())"
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('Rule: switchSerialNumber defaulted to 0000 for event: ' + envelope.getEventId())"
