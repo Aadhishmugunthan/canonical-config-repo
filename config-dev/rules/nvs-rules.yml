@@ -1,4 +1,4 @@
-# NVS Event Rules
+rules:
 
 - name: "NVS - Validate Required Metadata"
   priority: 2
