@@ -3,302 +3,107 @@ description: Account Information Service transactions
 
 tables:
 
-# =========================================================
-
-# TABLE 1 : SEND_TRANSACTIONS  (MAIN TABLE)
-
-# =========================================================
-
+# ===== TABLE 1 : AIS_TRANSACTIONS (Main Table) =====
 - tableName: SEND_TRANSACTIONS
   order: 1
   type: main
 
   mandatory:
-
-  - TRAN_ID
-  - TRAN_TYPE
+    - TRAN_ID
+    - TRAN_TYPE
 
   mapping:
-
-  TRAN_ID: $.accountInformationId
-  TRAN_INIT_ID: $.referenceId
-
-  ORIG_INST_ID: $.partnerId
-  ORIG_INST_NAM: $.partnerName
-
-  TRANFR_ACPT_NAM: $.institution
-  TRANFR_ACPT_ID: $.partnerId
-
-  TRAN_CRTE_DT: $.transactionLocalDateTime
-  TRAN_TYPE: $.transactionType
-
-  CUST_REF_NUM: $.referenceId
-
-  CUR_STAT: $.sendingAccountEligible.responseReasonCode
-  ORIG_STAT: $.receivingAccountEligible.eligible
-
-  USE_CASE: $.paymentType
-  MSG_TYPE: $.transactionType
-
-  REF_ID: $.referenceId
-  SW_SER_NUM: $.referenceId
-
-  BNKNT_REF_NUM: $.correlationId
-
-  SEND_ACCT: $.accountUri
-  RECIP_ACCT: $.accountUri
-
-  TRAN_AMT: $.amount
-  TRAN_CURR: $.accountStatementCurrency
-
-  ERR_CD: $.sendingAccountEligible.responseReasonCode
-
-  FUND_AVAIL: $.receivingAccountEligible.eligible
-
-  CORLTN_ID: $.correlationId
-
-  CRTE_TS: system_timestamp
-  CRTE_USER_NAM: system
-  UPDT_TS: system_timestamp
-  UPDT_USER_NAM: system
-
-  RPLCTN_UPDT_TS: system_timestamp
-
-  NTWRK_CD: $.network
-
-  NTWRK_RESP_CD: $.brand
-  NTWRK_RESP_CD_DESC: $.acceptanceBrand
-
-  TRAN_INIT_NAM: $.partnerName
-
-  NAM_STAT: $.sendingAccountEligible.responseReasonDetail
-  CVC_STAT: $.sendingAccountEligible.responseReasonCode
-  CVC_RESP_CD: $.sendingAccountEligible.responseReasonCode
-
-  ACCT_NUM: $.accountUri
-  ACCT_TYPE: $.accountType
-  ACCT_HOLD_NAM: $.partnerName
-
-  ERR_CD_DESC: $.sendingAccountEligible.responseReasonDetail
+    TRAN_ID: $.accountInformationId
+    TRAN_TYPE: $.transactionType
+    CUR_STAT: $.sendingAccountEligible.responseReasonCode
+    ORIG_STAT: $.receivingAccountEligible.eligible
+    ACCT_NUM: $.accountUri
+    NTWRK_CD: $.network
+    NTWRK_RESP_CD: $.brand
+    NTWRK_RESP_CD_DESC: $.acceptanceBrand
+    SW_SER_NUM: $.referenceId
+    ORIG_INST_ID: $.partnerId
+    ORIG_INST_NAM: $.partnerName
+    TRANFR_ACPT_NAM: $.institution
+    TRANFR_ACPT_ID: $.partnerId
+    CORLTN_ID: $.correlationId
+    TRAN_CRTE_DT: $.transactionLocalDateTime
 
 
-# =========================================================
-
-# TABLE 2 : SEND_TRAN_DTL (DETAIL TABLE)
-
-# =========================================================
-
+# ===== TABLE 2 : AIS_TRAN_DTL (Detail Table) =====
 - tableName: SEND_TRAN_DTL
   order: 2
   type: detail
-
   parentIdField: TRAN_ID
 
   mandatory:
-
-  - TRAN_ID
+    - TRAN_ID
 
   mapping:
+    TRAN_ID: $.accountInformationId
+    TRAN_CRTE_DT: $.transactionLocalDateTime
+    PAYMT_REF: $.referenceId
+    UNQ_TRAN_REF: $.correlationId
+    FUND_SRC: $.partnerName
+    TRAN_PRPS: $.paymentType
+    ORIG_RQST_PYLD: $.originalRequestPayload
+    ORIG_RESP_PYLD: $.originalResponsePayload
+    PROC_ID: $.partnerId
+    ACQ_ICA: $.brand
+    ACQ_IDEN_CD: $.acceptanceBrand
+    EVENT_ID: $.correlationId
+    EVENT_TS: $.transactionLocalDateTime
+    EVENT_CORLTN_ID: $.correlationId
 
-  TRAN_ID: $.accountInformationId
 
-  PAYMT_REF: $.referenceId
-  UNQ_TRAN_REF: $.correlationId
-
-  ACQ_CNTRY_NAM: $.country
-  ACQ_ICA: $.brand
-
-  FUND_SRC: $.partnerName
-
-  ICHG_RATE_DSGN: $.accountStatementCurrency
-  MERCH_CAT_CD: $.paymentType
-
-  PAYMT_TYPE: $.paymentType
-
-  POINT_SERV_INTRCTN: $.network
-
-  TRAN_PRPS: $.paymentType
-
-  TRAN_SETL_AMT: $.amount
-
-  BNC_GTWY_RQST: $.originalRequestPayload
-  BNC_GTWY_RESP: $.originalResponsePayload
-
-  ORIG_RQST_PYLD: $.originalRequestPayload
-  ORIG_RESP_PYLD: $.originalResponsePayload
-
-  TRANFR_ACPT_ID: $.partnerId
-  TRANFR_ACPT_NAM: $.institution
-
-  MC_ASSGN_MERCH: $.brand
-  PAYMT_FACILTR_ID: $.partnerId
-  SUB_MERCH_ID: $.referenceId
-
-  TRANFR_TRML_ID: $.referenceId
-
-  TRANFR_ACPT_ST_LINE1: $.institution
-  TRANFR_ACPT_ST_LINE2: $.partnerName
-  TRANFR_ACPT_CITY: $.country
-  TRANFR_ACPT_ST: $.country
-  TRANFR_ACPT_CNTRY_NAM: $.country
-  TRANFR_ACPT_POST_CD: $.accountStatementCurrency
-
-  CRTE_TS: system_timestamp
-  CRTE_USER_NAM: system
-  UPDT_TS: system_timestamp
-  UPDT_USER_NAM: system
-
-  EVENT_ID: $.correlationId
-  EVENT_TS: $.transactionLocalDateTime
-  EVENT_CORLTN_ID: $.correlationId
-
-  MSG_VERSION: "1"
-
-  TRAN_CRTE_DT: $.transactionLocalDateTime
-  RPLCTN_UPDT_TS: system_timestamp
-
-  TRAN_TYPE_IND_CD: $.transactionType
-
-  REGULATED_RATE_TYPE_CD: $.transactionType
-
-  CVC_RESP_DESC: $.sendingAccountEligible.responseReasonDetail
-
-  PROC_ID: $.partnerId
-
-  ACQ_IDEN_CD: $.acceptanceBrand
-
-  TRANFR_ACPT_MPG_ID: $.brand
-
-  TRANFR_ACPT_MERCH_VALUE: $.brand
-
-# =========================================================
-
-# TABLE 3 : SEND_RECIP_DTL (SENDER/RECIPIENT TABLE)
-
-# =========================================================
-
+# ===== TABLE 3 : AIS_RECIP_DTL (Recipient Table) =====
 - tableName: SEND_RECIP_DTL
   order: 3
   type: recipient
-
   parentIdField: TRAN_ID
   autoGenerateId: true
 
   mandatory:
-
-  - TRAN_ID
+    - TRAN_ID
 
   mapping:
+    TRAN_ID: $.accountInformationId
+    TRAN_CRTE_DT: $.transactionLocalDateTime
+    SEND_FIRST_NAM: $.sendingAccountEligible.responseReasonCode
+    SEND_LST_NAM: $.sendingAccountEligible.responseReasonDetail
+    SEND_ACCT_NUM: $.accountUri
+    SEND_ACCT_URI: $.accountUri
+    SEND_ST_LINE1: $.institution
+    SEND_CITY: $.country
+    SEND_CNTRY_NAM: $.country
+    SEND_POST_CD: $.accountStatementCurrency
 
-  TRAN_ID: $.accountInformationId
 
-  SEND_FIRST_NAM: $.sendingAccountEligible.responseReasonCode
-  SEND_MID_NAM: $.partnerName
-  SEND_LST_NAM: $.sendingAccountEligible.responseReasonDetail
-
-  SEND_PHN: $.referenceId
-  SEND_EMAIL: $.correlationId
-
-  SEND_DOB: $.transactionLocalDateTime
-  SEND_NATL: $.country
-  SEND_BIRTH_CNTRY_NAM: $.country
-
-  SEND_ACCT_NUM: $.accountUri
-  SEND_ACCT_URI: $.accountUri
-
-  SEND_GOVT_ID_URI: $.referenceId
-
-  SEND_ACCT_NUM_TYPE: $.accountType
-
-  SEND_CARD_NUM: $.brand
-  SEND_CARD_EXPIR_DT: $.accountStatementCurrency
-
-  SEND_ST_LINE1: $.institution
-  SEND_ST_LINE2: $.partnerName
-  SEND_CITY: $.country
-  SEND_ST: $.country
-  SEND_CNTRY_NAM: $.country
-  SEND_POST_CD: $.accountStatementCurrency
-
-  RECIP_FIRST_NAM: $.partnerName
-  RECIP_MID_NAM: $.institution
-  RECIP_LST_NAM: $.brand
-
-  RECIP_PHN: $.referenceId
-  RECIP_EMAIL: $.correlationId
-
-  RECIP_DOB: $.transactionLocalDateTime
-  RECIP_NATL: $.country
-  RECIP_BIRTH_CNTRY_NAM: $.country
-
-  RECIP_ACCT_NUM: $.accountUri
-  RECIP_ACCT_URI: $.accountUri
-  RECIP_GOVT_ID_URI: $.referenceId
-
-  RECIP_ACCT_NUM_TYPE: $.accountType
-
-  RECIP_CARD_NUM: $.brand
-  RECIP_CARD_EXPIR_DT: $.accountStatementCurrency
-
-  RECIP_ST_LINE1: $.institution
-  RECIP_ST_LINE2: $.partnerName
-  RECIP_CITY: $.country
-  RECIP_ST: $.country
-  RECIP_CNTRY_NAM: $.country
-  RECIP_POST_CD: $.accountStatementCurrency
-
-  CRTE_TS: system_timestamp
-  CRTE_USER_NAM: system
-  UPDT_TS: system_timestamp
-  UPDT_USER_NAM: system
-
-  TRAN_CRTE_DT: $.transactionLocalDateTime
-
-  RPLCTN_UPDT_TS: system_timestamp
-
-# =========================================================
-
-# TABLE 4 : SEND_TRAN_ADDR_DTL
-
-# =========================================================
-
+# ===== TABLE 4 : AIS_TRAN_ADDR_DTL (Address Table) =====
 - tableName: SEND_TRAN_ADDR_DTL
   order: 4
   type: address
-
   parentIdField: TRAN_ID
   autoGenerateId: true
 
   addressTypes:
 
-  - type: INSTITUTION
-    rootPath: $
-    fields:
+    - type: INSTITUTION
+      rootPath: $
+      fields:
+        ST_LINE1: $.institution
+        CITY: $.country
+        CNTRY_NAM: $.country
+        POST_CD: $.accountStatementCurrency
+        ADDR_STAT: $.accountType
 
-    ST_LINE1: $.institution
-    ST_LINE2: $.partnerName
-
-    CITY: $.country
-    ST: $.country
-
-    CNTRY_NAM: $.country
-
-    POST_CD: $.accountStatementCurrency
-
-    ADDR_STAT: $.accountType
-
-  - type: ACCOUNT
-    rootPath: $
-    fields:
-
-    ST_LINE1: $.accountUri
-    ST_LINE2: $.accountType
-
-    CITY: $.network
-    ST: $.brand
-
-    CNTRY_NAM: $.country
-
-    POST_CD: $.accountStatementCurrency
-
-    ADDR_STAT: $.sendingAccountEligible.eligible
+    - type: ACCOUNT
+      rootPath: $
+      fields:
+        ST_LINE1: $.accountUri
+        ST_LINE2: $.accountType
+        CITY: $.network
+        ST: $.brand
+        CNTRY_NAM: $.country
+        POST_CD: $.accountStatementCurrency
+        ADDR_STAT: $.sendingAccountEligible.eligible
