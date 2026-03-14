@@ -21,7 +21,6 @@ tables:
     NTWRK_CD: $.network
     NTWRK_RESP_CD: $.brand
     NTWRK_RESP_CD_DESC: $.acceptanceBrand
-    SW_SER_NUM: $.referenceId
     ORIG_INST_ID: $.partnerId
     ORIG_INST_NAM: $.partnerName
     TRANFR_ACPT_NAM: $.institution
