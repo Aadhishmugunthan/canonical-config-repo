@@ -2,7 +2,8 @@ eventName: PAYMENT
 description: Payment Service transactions
 
 tables:
-  # ===== TABLE 1: PAYMENT_TRANSACTIONS (Main Table) =====
+
+  # ===== TABLE 1: SEND_TRANSACTIONS (Main Table) =====
   - tableName: SEND_TRANSACTIONS
     order: 1
     type: main
@@ -12,25 +13,64 @@ tables:
     mapping:
       TRAN_ID: $.paymentTransactionId
       TRAN_TYPE: $.transactionType
+
+      TRAN_INIT_ID: $.referenceId
+
+      ORIG_INST_ID: $.partnerId
+      ORIG_INST_NAM: $.partnerName
+
+      TRANFR_ACPT_NAM: $.institution
+      TRANFR_ACPT_ID: $.partnerId
+
+      TRAN_CRTE_DT: $.transactionLocalDateTime
+
       CUR_STAT: $.paymentStatus.responseReasonCode
       ORIG_STAT: $.paymentStatus.eligible
-      ACCT_NUM: $.debtorAccountUri
+
+      CUST_REF_NUM: $.referenceId
+      USE_CASE: $.paymentMethod
+      MSG_TYPE: $.network
+      REF_ID: $.referenceId
+
+      SW_SER_NUM: $.switchSerialNumber
+      BNKINT_REF_NUM: $.correlationId
+
+      SEND_ACCT: $.debtorAccountUri
+      RECIP_ACCT: $.creditorAccountUri
+
+      TRAN_AMT: $.paymentAmount.value
+      TRAN_CURR: $.paymentAmount.currency
+
+      ERR_CD: $.paymentStatus.responseReasonCode
+      ERR_CD_DESC: $.paymentStatus.responseReasonDetail
+
+      FUND_AVAIL: $.paymentStatus.eligible
+
+      CORLTN_ID: $.correlationId
+
+      CRTE_TS: $.transactionLocalDateTime
+      CRTE_USER_NAM: $.partnerName
+      UPDT_TS: $.transactionLocalDateTime
+      UPDT_USER_NAM: $.partnerName
+      RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
       NTWRK_CD: $.network
       NTWRK_RESP_CD: $.brand
       NTWRK_RESP_CD_DESC: $.acceptanceBrand
-      SW_SER_NUM: $.switchSerialNumber
-      ORIG_INST_ID: $.partnerId
-      ORIG_INST_NAM: $.partnerName
-      TRANFR_ACPT_NAM: $.institution
-      TRANFR_ACPT_ID: $.partnerId
-      CORLTN_ID: $.correlationId
-      TRAN_CRTE_DT: $.transactionLocalDateTime
-      TRAN_AMT: $.paymentAmount.value
-      TRAN_CRNCY: $.paymentAmount.currency
-      PYMT_MTHD: $.paymentMethod
-      PYMT_PURP: $.paymentPurpose
 
-  # ===== TABLE 2: PAYMENT_TRAN_DTL (Detail Table) =====
+      TRAN_INIT_NAM: $.partnerName
+
+      NAM_STAT: $.paymentStatus.eligible
+      CVC_STAT: $.paymentStatus.eligible
+      CVC_RESP_CD: $.paymentStatus.responseReasonCode
+
+      ACCT_NUM: $.debtorAccountUri
+      ACCT_TYPE: $.paymentMethod
+      ACCT_HOLD_NAM: $.institution
+
+      NON_FIN_TXN: $.transactionType
+
+  # ===== TABLE 2: SEND_TRAN_DTL (Detail Table) =====
   - tableName: SEND_TRAN_DTL
     order: 2
     type: detail
@@ -40,26 +80,76 @@ tables:
     mapping:
       TRAN_ID: $.paymentTransactionId
       TRAN_CRTE_DT: $.transactionLocalDateTime
+
       PAYMT_REF: $.referenceId
       UNQ_TRAN_REF: $.correlationId
+
       FUND_SRC: $.partnerName
       TRAN_PRPS: $.paymentPurpose
+
       ORIG_RQST_PYLD: $.originalRequestPayload
       ORIG_RESP_PYLD: $.originalResponsePayload
+
       PROC_ID: $.partnerId
+
       ACQ_ICA: $.brand
       ACQ_IDEN_CD: $.acceptanceBrand
+      ACQ_CNTRY_NAM: $.country
+
+      PAYMT_TYPE: $.transactionType
+      POINT_SERV_INTRCTN: $.network
+
+      TRAN_SETL_AMT: $.paymentAmount.value
+
+      BNC_GTWY_RQST: $.originalRequestPayload
+      BNC_GTWY_RESP: $.originalResponsePayload
+
+      TRANFR_ACPT_ID: $.partnerId
+      TRANFR_ACPT_NAM: $.institution
+
+      TRANFR_ACPT_MPG_ID: $.partnerId
+      TRANFR_ACPT_MERCH_VALUE: $.institution
+
+      CRDTYCD: $.paymentMethod
+      POSPERAT: $.network
+      CRDTYCDDES: $.paymentMethod
+
+      ICHG_RATE_DSGN: $.brand
+      MERCH_CAT_CD: $.transactionType
+
+      MC_ASSGN_MERCH: $.institution
+      PAYMT_FACILTR_ID: $.partnerId
+      SUB_MERCH_ID: $.partnerId
+
+      TRANFR_TRML_ID: $.partnerId
+
+      TRANFR_ACPT_ST_LINE1: $.institution
+      TRANFR_ACPT_ST_LINE2: $.institution
+
+      TRANFR_ACPT_CITY: $.country
+      TRANFR_ACPT_ST: $.country
+      TRANFR_ACPT_CNTRY_NAM: $.country
+      TRANFR_ACPT_POST_CD: $.paymentAmount.currency
+
+      CRTE_TS: $.transactionLocalDateTime
+      CRTE_USER_NAM: $.partnerName
+      UPDT_TS: $.transactionLocalDateTime
+      UPDT_USER_NAM: $.partnerName
+
       EVENT_ID: $.correlationId
       EVENT_TS: $.transactionLocalDateTime
       EVENT_CORLTN_ID: $.correlationId
-      TRAN_AMT: $.paymentAmount.value
-      TRAN_CRNCY: $.paymentAmount.currency
-      SETL_AMT: $.settlementAmount.value
-      SETL_CRNCY: $.settlementAmount.currency
-      AUTH_CD: $.authorizationCode
-      RESP_CD: $.responseCode
 
-  # ===== TABLE 3: PAYMENT_RECIP_DTL (Recipient Table) =====
+      MSG_VERSION: $.network
+
+      TRAN_TYPE_IND_CD: $.transactionType
+      REGULATED_RATE_TYPE_CD: $.brand
+
+      CVC_RESP_DESC: $.paymentStatus.responseReasonDetail
+
+      RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
+  # ===== TABLE 3: SEND_RECIP_DTL (Recipient Table) =====
   - tableName: SEND_RECIP_DTL
     order: 3
     type: recipient
@@ -70,42 +160,95 @@ tables:
     mapping:
       TRAN_ID: $.paymentTransactionId
       TRAN_CRTE_DT: $.transactionLocalDateTime
+
       SEND_FIRST_NAM: $.debtor.firstName
+      SEND_MID_NAM: $.debtor.firstName
       SEND_LST_NAM: $.debtor.lastName
+
+      SEND_PHN: $.debtor.phone
+      SEND_EMAIL: $.debtor.email
+      SEND_DOB: $.debtor.dateOfBirth
+      SEND_NATL: $.debtor.address.country
+      SEND_BIRTH_CNTRY_NAM: $.debtor.address.country
+
       SEND_ACCT_NUM: $.debtorAccountUri
       SEND_ACCT_URI: $.debtorAccountUri
+      SEND_GOVT_ID_URI: $.debtorAccountUri
+      SEND_ACCT_NUM_TYPE: $.paymentMethod
+
+      SEND_CARD_NUM: $.debtorAccountUri
+      SEND_CARD_EXPIR_DT: $.cardExpiry
+
       SEND_ST_LINE1: $.debtor.address.line1
+      SEND_ST_LINE2: $.debtor.address.line2
       SEND_CITY: $.debtor.address.city
+      SEND_ST: $.debtor.address.state
       SEND_CNTRY_NAM: $.debtor.address.country
       SEND_POST_CD: $.debtor.address.postalCode
-      RECV_FIRST_NAM: $.creditor.firstName
-      RECV_LST_NAM: $.creditor.lastName
-      RECV_ACCT_NUM: $.creditorAccountUri
-      RECV_ACCT_URI: $.creditorAccountUri
-      RECV_ST_LINE1: $.creditor.address.line1
-      RECV_CITY: $.creditor.address.city
-      RECV_CNTRY_NAM: $.creditor.address.country
-      RECV_POST_CD: $.creditor.address.postalCode
 
-  # ===== TABLE 4: PAYMENT_TRAN_ADDR_DTL (Address Table) =====
+      RECIP_FIRST_NAM: $.creditor.firstName
+      RECIP_MID_NAM: $.creditor.firstName
+      RECIP_LST_NAM: $.creditor.lastName
+
+      RECIP_PHN: $.creditor.phone
+      RECIP_EMAIL: $.creditor.email
+      RECIP_DOB: $.creditor.dateOfBirth
+      RECIP_NATL: $.creditor.address.country
+      RECIP_BIRTH_CNTRY_NAM: $.creditor.address.country
+
+      RECIP_ACCT_NUM: $.creditorAccountUri
+      RECIP_ACCT_URI: $.creditorAccountUri
+      RECIP_GOVT_ID_URI: $.creditorAccountUri
+      RECIP_ACCT_NUM_TYPE: $.paymentMethod
+
+      RECIP_CARD_NUM: $.creditorAccountUri
+      RECIP_CARD_EXPIR_DT: $.cardExpiry
+
+      RECIP_ST_LINE1: $.creditor.address.line1
+      RECIP_ST_LINE2: $.creditor.address.line2
+      RECIP_CITY: $.creditor.address.city
+      RECIP_ST: $.creditor.address.state
+      RECIP_CNTRY_NAM: $.creditor.address.country
+      RECIP_POST_CD: $.creditor.address.postalCode
+
+      CRTE_TS: $.transactionLocalDateTime
+      CRTE_USER_NAM: $.partnerName
+      UPDT_TS: $.transactionLocalDateTime
+      UPDT_USER_NAM: $.partnerName
+      RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
+      PARTY_ROLE: $.transactionType
+
+  # ===== TABLE 4: SEND_TRAN_ADDR_DTL (Address Table) =====
   - tableName: SEND_TRAN_ADDR_DTL
     order: 4
     type: address
     parentIdField: TRAN_ID
     autoGenerateId: true
     addressTypes:
+
       - type: INSTITUTION
         rootPath: $
         fields:
+          TRAN_ID: $.paymentTransactionId
           ST_LINE1: $.institution
+          ST_LINE2: $.institution
           CITY: $.country
+          ST: $.country
           CNTRY_NAM: $.country
           POST_CD: $.paymentAmount.currency
           ADDR_STAT: $.paymentMethod
+          POST_CD_STAT: $.paymentMethod
+          CRTE_TS: $.transactionLocalDateTime
+          UPDT_TS: $.transactionLocalDateTime
+          CRTE_USER_NAM: $.partnerName
+          UPDT_USER_NAM: $.partnerName
+          RPLCTN_UPDT_TS: $.transactionLocalDateTime
 
       - type: DEBTOR
         rootPath: $
         fields:
+          TRAN_ID: $.paymentTransactionId
           ST_LINE1: $.debtor.address.line1
           ST_LINE2: $.debtor.address.line2
           CITY: $.debtor.address.city
@@ -113,10 +256,17 @@ tables:
           CNTRY_NAM: $.debtor.address.country
           POST_CD: $.debtor.address.postalCode
           ADDR_STAT: $.paymentStatus.eligible
+          POST_CD_STAT: $.paymentMethod
+          CRTE_TS: $.transactionLocalDateTime
+          UPDT_TS: $.transactionLocalDateTime
+          CRTE_USER_NAM: $.partnerName
+          UPDT_USER_NAM: $.partnerName
+          RPLCTN_UPDT_TS: $.transactionLocalDateTime
 
       - type: CREDITOR
         rootPath: $
         fields:
+          TRAN_ID: $.paymentTransactionId
           ST_LINE1: $.creditor.address.line1
           ST_LINE2: $.creditor.address.line2
           CITY: $.creditor.address.city
@@ -124,3 +274,9 @@ tables:
           CNTRY_NAM: $.creditor.address.country
           POST_CD: $.creditor.address.postalCode
           ADDR_STAT: $.paymentStatus.responseReasonCode
+          POST_CD_STAT: $.paymentMethod
+          CRTE_TS: $.transactionLocalDateTime
+          UPDT_TS: $.transactionLocalDateTime
+          CRTE_USER_NAM: $.partnerName
+          UPDT_USER_NAM: $.partnerName
+          RPLCTN_UPDT_TS: $.transactionLocalDateTime
