@@ -1,115 +1,296 @@
 eventName: AVS
 description: Address Verification Service transactions
 
-# Define all tables and their mappings in ONE place
 tables:
 
-  # ===== TABLE 1: SEND_TRANSACTIONS (Main Table) =====
-  - tableName: SEND_TRANSACTIONS
-    order: 1
-    type: main
-    mandatory:
-      - TRAN_ID
-      - TRAN_TYPE
-    mapping:
-      TRAN_ID: $.avsTranId
-      TRAN_TYPE: $.transactionType
-      CUR_STAT: $.cvcStatCd
-      ORIG_STAT: $.avsRespCd
-      ACCT_NUM: $.acctNum
-      NTWRK_CD: $.network
-      NTWRK_RESP_CD: $.networkResponseCode
-      NTWRK_RESP_CD_DESC: $.networkResponseCodeDesc
-      SW_SER_NUM: $.switchSerialNumber
-      ORIG_INST_ID: $.originatingInstId
-      ORIG_INST_NAM: $.originatingInstName
-      TRANFR_ACPT_NAM: $.transferAccptName
-      TRANFR_ACPT_ID: $.transferAccptId
-      CORLTN_ID: $.correlationId
-      TRAN_CRTE_DT: $.createDate
+# ===== TABLE 1 : SEND_TRANSACTIONS (Main Table) =====
 
-  # ===== TABLE 2: SEND_TRAN_DTL (Detail Table) =====
-  - tableName: SEND_TRAN_DTL
-    order: 2
-    type: detail
-    parentIdField: TRAN_ID
-    mandatory:
-      - TRAN_ID
-    mapping:
-      TRAN_ID: $.avsTranId
-      TRAN_CRTE_DT: $.createDate
-      PAYMT_REF: $.avsExtRefId
-      UNQ_TRAN_REF: $.requestId
-      FUND_SRC: $.partnerName
-      TRAN_PRPS: $.busnPrtnrRefId
-      ORIG_RQST_PYLD: $.originalRequestPayload
-      ORIG_RESP_PYLD: $.originalResponsePayload
-      PROC_ID: $.processorId
-      ACQ_ICA: $.acquiringICA
-      ACQ_IDEN_CD: $.acquiringIdentificationCode
-      EVENT_ID: $.avsExtRefId
-      EVENT_TS: $.createDate
-      EVENT_CORLTN_ID: $.correlationId
+- tableName: SEND_TRANSACTIONS
+  order: 1
+  type: main
 
-  # ===== TABLE 3: SEND_RECIP_DTL (Recipient Table) =====
-  - tableName: SEND_RECIP_DTL
-    order: 3
-    type: recipient
-    parentIdField: TRAN_ID
-    autoGenerateId: true  # This tells us to add UUID for ID column
-    mandatory:
-      - TRAN_ID
-    mapping:
-      TRAN_ID: $.avsTranId
-      TRAN_CRTE_DT: $.createDate
-      SEND_FIRST_NAM: $.frstNam
-      SEND_LST_NAM: $.lstNam
-      SEND_ACCT_NUM: $.acctNum
-      SEND_ACCT_URI: $.accountUri
-      SEND_ST_LINE1: $.stLn1Addr
-      SEND_ST_LINE2: $.stLn2Addr
-      SEND_CITY: $.cityNam
-      SEND_ST: $.stPrvncCd
-      SEND_CNTRY_NAM: $.cntryCd
-      SEND_POST_CD: $.postCd
+  mandatory:
+    - TRAN_ID
+    - TRAN_TYPE
 
-  # ===== TABLE 4: SEND_TRAN_ADDR_DTL (Address Table) =====
-  - tableName: SEND_TRAN_ADDR_DTL
-    order: 4
-    type: address
-    parentIdField: TRAN_ID
-    autoGenerateId: true
-    # Address types we want to insert
-    addressTypes:
-      - type: HOME
-        rootPath: $
-        fields:
-          ST_LINE1: $.stLn1Addr
-          ST_LINE2: $.stLn2Addr
-          CITY: $.cityNam
-          ST: $.stPrvncCd
-          CNTRY_NAM: $.cntryCd
-          POST_CD: $.postCd
-          ADDR_STAT: $.addrStatCd
-          POST_CD_STAT: $.postStatCd
+  mapping:
+    TRAN_ID: $.avsTranId
+    TRAN_TYPE: $.transactionType
 
-      - type: BILLING
-        rootPath: $
-        fields:
-          ST_LINE1: $.billingAddr1
-          ST_LINE2: $.billingAddr2
-          CITY: $.billingCity
-          ST: $.billingState
-          CNTRY_NAM: $.billingCountry
-          POST_CD: $.billingZip
+    TRAN_INIT_ID: $.avsExtRefId
 
-      - type: MAILING
-        rootPath: $
-        fields:
-          ST_LINE1: $.mailingAddr1
-          ST_LINE2: $.mailingAddr2
-          CITY: $.mailingCity
-          ST: $.mailingState
-          CNTRY_NAM: $.mailingCountry
-          POST_CD: $.mailingZip
+    ORIG_INST_ID: $.originatingInstId
+    ORIG_INST_NAM: $.originatingInstName
 
+    TRANFR_ACPT_NAM: $.transferAccptName
+    TRANFR_ACPT_ID: $.transferAccptId
+
+    TRAN_CRTE_DT: $.createDate
+
+    CUR_STAT: $.cvcStatCd
+    ORIG_STAT: $.avsRespCd
+
+    CUST_REF_NUM: $.avsExtRefId
+    USE_CASE: $.busnPrtnrRefId
+    MSG_TYPE: $.network
+    REF_ID: $.avsExtRefId
+
+    SW_SER_NUM: $.switchSerialNumber
+    BNKINT_REF_NUM: $.correlationId
+
+    SEND_ACCT: $.acctNum
+    RECIP_ACCT: $.acctNum
+
+    TRAN_AMT: $.transactionAmount
+    TRAN_CURR: $.transactionCurrency
+
+    ERR_CD: $.avsRespCd
+    ERR_CD_DESC: $.networkResponseCodeDesc
+
+    FUND_AVAIL: $.cvcStatCd
+
+    CORLTN_ID: $.correlationId
+
+    CRTE_TS: $.createDate
+    CRTE_USER_NAM: $.partnerName
+    UPDT_TS: $.createDate
+    UPDT_USER_NAM: $.partnerName
+    RPLCTN_UPDT_TS: $.createDate
+
+    NTWRK_CD: $.network
+    NTWRK_RESP_CD: $.networkResponseCode
+    NTWRK_RESP_CD_DESC: $.networkResponseCodeDesc
+
+    TRAN_INIT_NAM: $.partnerName
+
+    NAM_STAT: $.avsRespCd
+    CVC_STAT: $.cvcStatCd
+    CVC_RESP_CD: $.cvcStatCd
+
+    ACCT_NUM: $.acctNum
+    ACCT_TYPE: $.accountType
+    ACCT_HOLD_NAM: $.frstNam
+
+    NON_FIN_TXN: $.transactionType
+
+
+# ===== TABLE 2 : SEND_TRAN_DTL =====
+
+- tableName: SEND_TRAN_DTL
+  order: 2
+  type: detail
+  parentIdField: TRAN_ID
+
+  mandatory:
+    - TRAN_ID
+
+  mapping:
+    TRAN_ID: $.avsTranId
+    TRAN_CRTE_DT: $.createDate
+
+    PAYMT_REF: $.avsExtRefId
+    UNQ_TRAN_REF: $.requestId
+
+    FUND_SRC: $.partnerName
+    TRAN_PRPS: $.busnPrtnrRefId
+
+    ORIG_RQST_PYLD: $.originalRequestPayload
+    ORIG_RESP_PYLD: $.originalResponsePayload
+
+    PROC_ID: $.processorId
+
+    ACQ_ICA: $.acquiringICA
+    ACQ_IDEN_CD: $.acquiringIdentificationCode
+    ACQ_CNTRY_NAM: $.cntryCd
+
+    PAYMT_TYPE: $.transactionType
+    POINT_SERV_INTRCTN: $.network
+
+    TRAN_SETL_AMT: $.transactionAmount
+
+    BNC_GTWY_RQST: $.originalRequestPayload
+    BNC_GTWY_RESP: $.originalResponsePayload
+
+    TRANFR_ACPT_ID: $.transferAccptId
+    TRANFR_ACPT_NAM: $.transferAccptName
+
+    TRANFR_ACPT_MPG_ID: $.transferAccptId
+    TRANFR_ACPT_MERCH_VALUE: $.transferAccptName
+
+    CRDTYCD: $.accountType
+    POSPERAT: $.network
+    CRDTYCDDES: $.accountType
+
+    ICHG_RATE_DSGN: $.networkResponseCode
+    MERCH_CAT_CD: $.transactionType
+
+    MC_ASSGN_MERCH: $.transferAccptName
+    PAYMT_FACILTR_ID: $.processorId
+    SUB_MERCH_ID: $.processorId
+
+    TRANFR_TRML_ID: $.processorId
+
+    TRANFR_ACPT_ST_LINE1: $.stLn1Addr
+    TRANFR_ACPT_ST_LINE2: $.stLn2Addr
+
+    TRANFR_ACPT_CITY: $.cityNam
+    TRANFR_ACPT_ST: $.stPrvncCd
+    TRANFR_ACPT_CNTRY_NAM: $.cntryCd
+    TRANFR_ACPT_POST_CD: $.postCd
+
+    CRTE_TS: $.createDate
+    CRTE_USER_NAM: $.partnerName
+
+    UPDT_TS: $.createDate
+    UPDT_USER_NAM: $.partnerName
+
+    EVENT_ID: $.avsExtRefId
+    EVENT_TS: $.createDate
+    EVENT_CORLTN_ID: $.correlationId
+
+    MSG_VERSION: $.network
+
+    TRAN_TYPE_IND_CD: $.transactionType
+    REGULATED_RATE_TYPE_CD: $.networkResponseCode
+
+    CVC_RESP_DESC: $.networkResponseCodeDesc
+
+    RPLCTN_UPDT_TS: $.createDate
+
+
+# ===== TABLE 3 : SEND_RECIP_DTL =====
+
+- tableName: SEND_RECIP_DTL
+  order: 3
+  type: recipient
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  mandatory:
+    - TRAN_ID
+
+  mapping:
+    TRAN_ID: $.avsTranId
+    TRAN_CRTE_DT: $.createDate
+
+    SEND_FIRST_NAM: $.frstNam
+    SEND_MID_NAM: $.midNam
+    SEND_LST_NAM: $.lstNam
+
+    SEND_PHN: $.phone
+    SEND_EMAIL: $.email
+    SEND_DOB: $.birthDate
+    SEND_NATL: $.cntryCd
+    SEND_BIRTH_CNTRY_NAM: $.cntryCd
+
+    SEND_ACCT_NUM: $.acctNum
+    SEND_ACCT_URI: $.accountUri
+    SEND_GOVT_ID_URI: $.govtId
+    SEND_ACCT_NUM_TYPE: $.accountType
+
+    SEND_CARD_NUM: $.acctNum
+    SEND_CARD_EXPIR_DT: $.cardExpiry
+
+    SEND_ST_LINE1: $.stLn1Addr
+    SEND_ST_LINE2: $.stLn2Addr
+    SEND_CITY: $.cityNam
+    SEND_ST: $.stPrvncCd
+    SEND_CNTRY_NAM: $.cntryCd
+    SEND_POST_CD: $.postCd
+
+    RECIP_FIRST_NAM: $.frstNam
+    RECIP_MID_NAM: $.midNam
+    RECIP_LST_NAM: $.lstNam
+
+    RECIP_PHN: $.phone
+    RECIP_EMAIL: $.email
+    RECIP_DOB: $.birthDate
+    RECIP_NATL: $.cntryCd
+    RECIP_BIRTH_CNTRY_NAM: $.cntryCd
+
+    RECIP_ACCT_NUM: $.acctNum
+    RECIP_ACCT_URI: $.accountUri
+    RECIP_GOVT_ID_URI: $.govtId
+    RECIP_ACCT_NUM_TYPE: $.accountType
+
+    RECIP_CARD_NUM: $.acctNum
+    RECIP_CARD_EXPIR_DT: $.cardExpiry
+
+    RECIP_ST_LINE1: $.stLn1Addr
+    RECIP_ST_LINE2: $.stLn2Addr
+    RECIP_CITY: $.cityNam
+    RECIP_ST: $.stPrvncCd
+    RECIP_CNTRY_NAM: $.cntryCd
+    RECIP_POST_CD: $.postCd
+
+    CRTE_TS: $.createDate
+    CRTE_USER_NAM: $.partnerName
+    UPDT_TS: $.createDate
+    UPDT_USER_NAM: $.partnerName
+    RPLCTN_UPDT_TS: $.createDate
+
+    PARTY_ROLE: $.transactionType
+
+
+# ===== TABLE 4 : SEND_TRAN_ADDR_DTL =====
+
+- tableName: SEND_TRAN_ADDR_DTL
+  order: 4
+  type: address
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  addressTypes:
+
+    - type: HOME
+      rootPath: $
+      fields:
+        TRAN_ID: $.avsTranId
+        ST_LINE1: $.stLn1Addr
+        ST_LINE2: $.stLn2Addr
+        CITY: $.cityNam
+        ST: $.stPrvncCd
+        CNTRY_NAM: $.cntryCd
+        POST_CD: $.postCd
+        ADDR_STAT: $.addrStatCd
+        POST_CD_STAT: $.postStatCd
+
+        CRTE_TS: $.createDate
+        UPDT_TS: $.createDate
+        CRTE_USER_NAM: $.partnerName
+        UPDT_USER_NAM: $.partnerName
+        RPLCTN_UPDT_TS: $.createDate
+
+    - type: BILLING
+      rootPath: $
+      fields:
+        TRAN_ID: $.avsTranId
+        ST_LINE1: $.billingAddr1
+        ST_LINE2: $.billingAddr2
+        CITY: $.billingCity
+        ST: $.billingState
+        CNTRY_NAM: $.billingCountry
+        POST_CD: $.billingZip
+
+        CRTE_TS: $.createDate
+        UPDT_TS: $.createDate
+        CRTE_USER_NAM: $.partnerName
+        UPDT_USER_NAM: $.partnerName
+        RPLCTN_UPDT_TS: $.createDate
+
+    - type: MAILING
+      rootPath: $
+      fields:
+        TRAN_ID: $.avsTranId
+        ST_LINE1: $.mailingAddr1
+        ST_LINE2: $.mailingAddr2
+        CITY: $.mailingCity
+        ST: $.mailingState
+        CNTRY_NAM: $.mailingCountry
+        POST_CD: $.mailingZip
+
+        CRTE_TS: $.createDate
+        UPDT_TS: $.createDate
+        CRTE_USER_NAM: $.partnerName
+        UPDT_USER_NAM: $.partnerName
+        RPLCTN_UPDT_TS: $.createDate
