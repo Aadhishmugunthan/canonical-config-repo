@@ -284,7 +284,7 @@ tables:
   # ===== TABLE 5: CLEARING (Clearing Specific Table) =====
   - tableName: CLEARING
     order: 5
-    type: clearing
+    type: child
     parentIdField: TRAN_ID
     mandatory:
       - TRAN_ID
