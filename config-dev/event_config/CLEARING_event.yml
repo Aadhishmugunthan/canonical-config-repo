@@ -290,6 +290,6 @@ tables:
       - TRAN_ID
     mapping:
       TRAN_ID: $.transactionId
-      CLRST: $.clearing.status
-      CLRNG_DT: $.settlementDate
-      SWT_DT: $.settlementDate
+      CLRST: $.status
+      CLRNG_DT: $.clearingDate
+      SWT_DT: $.switchDate
