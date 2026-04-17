@@ -286,6 +286,7 @@ tables:
     order: 5
     type: child
     parentIdField: TRAN_ID
+    rootPath: $
     mandatory:
       - TRAN_ID
     mapping:
