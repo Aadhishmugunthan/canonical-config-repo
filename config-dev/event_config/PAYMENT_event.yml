@@ -280,3 +280,16 @@ tables:
           CRTE_USER_NAM: $.partnerName
           UPDT_USER_NAM: $.partnerName
           RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
+  # ===== TABLE 5: CLEARING (Clearing Specific Table) =====
+  - tableName: CLEARING
+    order: 5
+    type: clearing
+    parentIdField: TRAN_ID
+    mandatory:
+      - TRAN_ID
+    mapping:
+      TRAN_ID: $.transactionId
+      CLRST: $.status
+      CLRNG_DT: $.clearingDate
+      SWT_DT: $.switchDate
