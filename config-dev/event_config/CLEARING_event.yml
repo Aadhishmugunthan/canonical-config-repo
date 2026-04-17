@@ -291,5 +291,5 @@ tables:
     mapping:
       TRAN_ID: $.transactionId
       CLRST: $.clearing.status
-      CLRNG_DT: $.clearing.clearingDate
-      SWT_DT: $.clearing.switchDate
+      CLRNG_DT: $.settlementDate
+      SWT_DT: $.settlementDate
