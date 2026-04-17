@@ -289,7 +289,7 @@ tables:
     mandatory:
       - TRAN_ID
     mapping:
-      TRAN_ID: $.clearingId
+      TRAN_ID: $.transactionId
       CLRST: $.clearing.status
       CLRNG_DT: $.clearing.clearingDate
       SWT_DT: $.clearing.switchDate
