@@ -1,1 +1,120 @@
+rules:
 
+# Rule 1: Validate Required Metadata
+- name: "SETTLEMENT - Validate Required Metadata"
+  description: "Ensure eventMetadata is not null or empty"
+  priority: 2
+  condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring settlement event with missing metadata: ' + envelope.getEventId())"
+
+
+# Rule 2: Ignore Test Events
+- name: "SETTLEMENT - Ignore Test Events"
+  description: "Ignore events from test environments"
+  priority: 1
+  condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring TEST settlement event: ' + envelope.getEventId())"
+
+
+# Rule 3: Validate Event Payload
+- name: "SETTLEMENT - Validate Payload"
+  description: "Ensure event payload is not empty"
+  priority: 2
+  condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring settlement event with empty payload: ' + envelope.getEventId())"
+
+
+# Rule 4: Ignore if Transaction ID Missing
+- name: "SETTLEMENT - Missing Transaction ID"
+  description: "Ignore events where settlementTransactionId is missing"
+  priority: 1
+  condition: "!envelope.getEventPayload().contains('settlementTransactionId')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing settlementTransactionId for event: ' + envelope.getEventId())"
+
+
+# Rule 5: Validate Event Source
+- name: "SETTLEMENT - Validate Event Source"
+  description: "Ignore events from invalid sources"
+  priority: 1
+  condition: "eventSource == null || (!eventSource.toUpperCase().contains('SET') && !eventSource.toUpperCase().contains('STL'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid settlement event source ' + eventSource + ' for event: ' + envelope.getEventId())"
+
+
+# Rule 6: Validate Regulatory Region
+- name: "SETTLEMENT - Validate Regulatory Region"
+  description: "Allow only STL or ATL"
+  priority: 1
+  condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for settlement event: ' + envelope.getEventId())"
+
+
+# Rule 7: Validate Settlement Amount
+- name: "SETTLEMENT - Validate Settlement Amount"
+  description: "Ignore events where settlementAmount is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('settlementAmount')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing settlementAmount for event: ' + envelope.getEventId())"
+
+
+# Rule 8: Validate Settlement Currency
+- name: "SETTLEMENT - Validate Settlement Currency"
+  description: "Ignore events where currency is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('currency')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing settlement currency for event: ' + envelope.getEventId())"
+
+
+# Rule 9: Validate Settlement Method
+- name: "SETTLEMENT - Validate Settlement Method"
+  description: "Ignore events where settlementMethod is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('settlementMethod')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing settlementMethod for event: ' + envelope.getEventId())"
+
+
+# Rule 10: Default Settlement Status
+- name: "SETTLEMENT - Default Settlement Status"
+  description: "Set settlementStatus to UNKNOWN if missing"
+  priority: 3
+  condition: "!envelope.getEventPayload().contains('settlementStatus')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replace('}',' ,\"settlementStatus\":\"UNKNOWN\"}'))"
+    - "System.out.println('Rule: settlementStatus defaulted for event: ' + envelope.getEventId())"
+
+
+# Rule 11: Default Settlement Reference
+- name: "SETTLEMENT - Default Settlement Reference"
+  description: "Ensure settlementReference exists"
+  priority: 3
+  condition: "!envelope.getEventPayload().contains('settlementReference')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replace('}',' ,\"settlementReference\":\"NA\"}'))"
+    - "System.out.println('Rule: settlementReference defaulted for event: ' + envelope.getEventId())"
+
+
+# Rule 12: Validate Settlement Date
+- name: "SETTLEMENT - Validate Settlement Date"
+  description: "Ignore events where settlementDate is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('settlementDate')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing settlementDate for event: ' + envelope.getEventId())"
