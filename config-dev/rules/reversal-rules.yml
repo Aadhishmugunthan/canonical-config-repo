@@ -1,1 +1,120 @@
+rules:
 
+# Rule 1: Validate Required Metadata
+- name: "REVERSAL - Validate Required Metadata"
+  description: "Ensure eventMetadata is not null or empty"
+  priority: 2
+  condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring reversal event with missing metadata: ' + envelope.getEventId())"
+
+
+# Rule 2: Ignore Test Events
+- name: "REVERSAL - Ignore Test Events"
+  description: "Ignore events from test environments"
+  priority: 1
+  condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring TEST reversal event: ' + envelope.getEventId())"
+
+
+# Rule 3: Validate Event Payload
+- name: "REVERSAL - Validate Payload"
+  description: "Ensure event payload is not empty"
+  priority: 2
+  condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring reversal event with empty payload: ' + envelope.getEventId())"
+
+
+# Rule 4: Ignore if Transaction ID Missing
+- name: "REVERSAL - Missing Transaction ID"
+  description: "Ignore events where reversalTransactionId is missing"
+  priority: 1
+  condition: "!envelope.getEventPayload().contains('reversalTransactionId')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing reversalTransactionId for event: ' + envelope.getEventId())"
+
+
+# Rule 5: Validate Event Source
+- name: "REVERSAL - Validate Event Source"
+  description: "Ignore events from invalid sources"
+  priority: 1
+  condition: "eventSource == null || (!eventSource.toUpperCase().contains('REV') && !eventSource.toUpperCase().contains('RVS'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid reversal event source ' + eventSource + ' for event: ' + envelope.getEventId())"
+
+
+# Rule 6: Validate Regulatory Region
+- name: "REVERSAL - Validate Regulatory Region"
+  description: "Allow only STL or ATL"
+  priority: 1
+  condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for reversal event: ' + envelope.getEventId())"
+
+
+# Rule 7: Validate Reversal Amount
+- name: "REVERSAL - Validate Reversal Amount"
+  description: "Ignore events where reversalAmount is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('reversalAmount')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing reversalAmount for event: ' + envelope.getEventId())"
+
+
+# Rule 8: Validate Reversal Currency
+- name: "REVERSAL - Validate Reversal Currency"
+  description: "Ignore events where currency is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('currency')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing reversal currency for event: ' + envelope.getEventId())"
+
+
+# Rule 9: Validate Reversal Reason
+- name: "REVERSAL - Validate Reversal Reason"
+  description: "Ignore events where reversalReason is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('reversalReason')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing reversalReason for event: ' + envelope.getEventId())"
+
+
+# Rule 10: Default Reversal Status
+- name: "REVERSAL - Default Reversal Status"
+  description: "Set reversalStatus to UNKNOWN if missing"
+  priority: 3
+  condition: "!envelope.getEventPayload().contains('reversalStatus')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replace('}',' ,\"reversalStatus\":\"UNKNOWN\"}'))"
+    - "System.out.println('Rule: reversalStatus defaulted for event: ' + envelope.getEventId())"
+
+
+# Rule 11: Default Reversal Reference
+- name: "REVERSAL - Default Reversal Reference"
+  description: "Ensure reversalReference exists"
+  priority: 3
+  condition: "!envelope.getEventPayload().contains('reversalReference')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replace('}',' ,\"reversalReference\":\"NA\"}'))"
+    - "System.out.println('Rule: reversalReference defaulted for event: ' + envelope.getEventId())"
+
+
+# Rule 12: Validate Reversal Date
+- name: "REVERSAL - Validate Reversal Date"
+  description: "Ignore events where reversalDate is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('reversalDate')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing reversalDate for event: ' + envelope.getEventId())"
