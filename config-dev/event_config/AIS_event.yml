@@ -17,9 +17,9 @@ tables:
   mapping:
     TRAN_ID: $.accountInformationId
     TRAN_TYPE: $.transactionType
-
+    SWITCH_STAT_DESC: $.switchStatusDesc 
     TRAN_INIT_ID: $.referenceId
-
+    SWITCH_STAT: $.switchStatus 
     ORIG_INST_ID: $.partnerId
     ORIG_INST_NAM: $.partnerName
 
