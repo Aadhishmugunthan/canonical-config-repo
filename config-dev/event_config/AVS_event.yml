@@ -16,9 +16,9 @@ tables:
   mapping:
     TRAN_ID: $.avsTranId
     TRAN_TYPE: $.transactionType
-
+    SWITCH_STAT: $.switchStatus
     TRAN_INIT_ID: $.avsExtRefId
-
+    SWITCH_STAT_DESC: $.switchStatusDesc
     ORIG_INST_ID: $.originatingInstId
     ORIG_INST_NAM: $.originatingInstName
 
