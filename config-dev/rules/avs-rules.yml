@@ -9,6 +9,19 @@ rules:
     - "envelope.setIgnore(true)"
     - "System.out.println('Rule: Ignoring event with missing metadata: ' + envelope.getEventId())"
 
+# Rule: Detect UPDATE Operation
+
+- name: "AVS - Detect Update Operation"
+  description: "Mark envelope as update when operation is U"
+  priority: 1
+
+  condition: >
+    eventMetadata != null &&
+    eventMetadata.contains("\"operation\":\"U\"")
+
+  actions:
+    - "envelope.setUpdate(true)"
+    - "System.out.println('Rule: UPDATE operation detected for event: ' + envelope.getEventId())"
 
 # Rule 2: Ignore Test Events
 - name: "AVS - Ignore Test Events"
