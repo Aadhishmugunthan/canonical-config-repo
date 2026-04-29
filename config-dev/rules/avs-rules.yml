@@ -13,7 +13,7 @@ rules:
 
 - name: "AVS - Detect Update Operation"
   description: "Mark envelope as update when operation is U"
-  priority: 1
+  priority: 0
 
   condition: >
     eventMetadata != null &&
