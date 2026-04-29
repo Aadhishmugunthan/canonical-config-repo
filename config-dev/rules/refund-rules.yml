@@ -1,0 +1,130 @@
+rules:
+
+# Rule 1: Validate Required Metadata
+- name: "REFUND - Validate Required Metadata"
+  description: "Ensure eventMetadata is not null or empty"
+  priority: 2
+  condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring event with missing metadata: ' + envelope.getEventId())"
+
+
+# Rule 2: Ignore Test Events
+- name: "REFUND - Ignore Test Events"
+  description: "Ignore events from test environments"
+  priority: 1
+  condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring TEST event: ' + envelope.getEventId())"
+
+
+# Rule 3: Validate Event Payload
+- name: "REFUND - Validate Payload"
+  description: "Ensure event payload is not empty"
+  priority: 2
+  condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring event with empty payload: ' + envelope.getEventId())"
+
+
+# Rule 4: Default Brand if Non-Numeric
+- name: "REFUND - Default ACQ_ICA"
+  description: "Set brand to 0 if non-numeric"
+  priority: 3
+  condition: "envelope.getEventPayload().contains('brand') && !envelope.getEventPayload().matches('.*\"brand\":\"[0-9]+\".*')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"brand\":\"[^\"]*\"','\"brand\":\"0\"'))"
+    - "System.out.println('Rule: Brand corrected to 0 for event: ' + envelope.getEventId())"
+
+
+# Rule 5: Ignore if Transaction ID Missing
+- name: "REFUND - Missing Transaction ID"
+  description: "Ignore events where refundTransactionId is missing"
+  priority: 1
+  condition: "!envelope.getEventPayload().contains('refundTransactionId')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing refundTransactionId for event: ' + envelope.getEventId())"
+
+
+# Rule 6: Validate Event Source
+- name: "REFUND - Validate Event Source"
+  description: "Ignore events from invalid sources"
+  priority: 1
+  condition: "eventSource == null || (!eventSource.toUpperCase().contains('REF'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid event source ' + eventSource + ' for event: ' + envelope.getEventId())"
+
+
+# Rule 7: Validate Regulatory Region
+- name: "REFUND - Validate Regulatory Region"
+  description: "Allow only STL or ATL"
+  priority: 1
+  condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for event: ' + envelope.getEventId())"
+
+
+# Rule 8: Validate Refund Amount
+- name: "REFUND - Validate Refund Amount"
+  description: "Ignore events where refundAmount is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('refundAmount')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid refundAmount for event: ' + envelope.getEventId())"
+
+
+# Rule 9: Validate Refund Currency
+- name: "REFUND - Validate Refund Currency"
+  description: "Ignore events where currency is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('currency')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing currency for event: ' + envelope.getEventId())"
+
+
+# Rule 10: Validate Refund Method
+- name: "REFUND - Validate Refund Method"
+  description: "Ignore events where refundMethod is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('refundMethod')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing refundMethod for event: ' + envelope.getEventId())"
+
+
+# Rule 11: Validate Debtor Account URI
+- name: "REFUND - Validate Debtor Account URI"
+  description: "Ignore events where debtorAccountUri is missing"
+  priority: 2
+  condition: "!envelope.getEventPayload().contains('debtorAccountUri')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing debtorAccountUri for event: ' + envelope.getEventId())"
+
+
+# Rule 12: Default Response Code
+- name: "REFUND - Default Response Code"
+  description: "Set responseCode to UNKNOWN if missing"
+  priority: 3
+  condition: "!envelope.getEventPayload().contains('responseCode')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replace('}',' ,\"responseCode\":\"UNKNOWN\"}'))"
+    - "System.out.println('Rule: responseCode defaulted for event: ' + envelope.getEventId())"
+
+
+# Rule 13: Default SW_SER_NUM
+- name: "REFUND - Default SW_SER_NUM"
+  description: "Ensure switchSerialNumber is numeric"
+  priority: 3
+  condition: "envelope.getEventPayload().contains('switchSerialNumber') && !envelope.getEventPayload().matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('Rule: switchSerialNumber defaulted to 0000 for event: ' + envelope.getEventId())"
