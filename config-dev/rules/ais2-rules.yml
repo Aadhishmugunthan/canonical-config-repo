@@ -1,1 +1,90 @@
+rules:
 
+# Rule 1: Validate Required Metadata
+- name: "AIS2 - Validate Required Metadata"
+  description: "Ensure eventMetadata is not null or empty"
+  priority: 2
+  condition: "eventMetadata == null || eventMetadata.trim().isEmpty()"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring AIS2 event with missing metadata: ' + envelope.getEventId())"
+
+
+# Rule 2: Ignore Test Events
+- name: "AIS2 - Ignore Test Events"
+  description: "Ignore events from test environments"
+  priority: 1
+  condition: "eventSource != null && eventSource.toLowerCase().contains('test')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring AIS2 TEST event: ' + envelope.getEventId())"
+
+
+# Rule 3: Validate Event Payload
+- name: "AIS2 - Validate Payload"
+  description: "Ensure event payload is not empty"
+  priority: 2
+  condition: "eventPayload == null || eventPayload.trim().isEmpty() || eventPayload.equals('{}') || eventPayload.equals('null')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Ignoring AIS2 event with empty payload: ' + envelope.getEventId())"
+
+
+# Rule 4: Default brand if Non-Numeric
+- name: "AIS2 - Default Brand Numeric"
+  description: "Set brand to 0 if non-numeric"
+  priority: 3
+  condition: "envelope.getEventPayload().contains('brand') && !envelope.getEventPayload().matches('.*\"brand\":\"[0-9]+\".*')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"brand\":\"[^\"]*\"','\"brand\":\"0\"'))"
+    - "System.out.println('Rule: Brand corrected to 0 for AIS2 event: ' + envelope.getEventId())"
+
+
+# Rule 5: Ignore if accountInformationId Missing
+- name: "AIS2 - Missing Transaction ID"
+  description: "Ignore events where accountInformationId is missing"
+  priority: 1
+  condition: "!envelope.getEventPayload().contains('accountInformationId')"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Missing accountInformationId for AIS2 event: ' + envelope.getEventId())"
+
+
+# Rule 6: Validate Event Source
+- name: "AIS2 - Validate Event Source"
+  description: "Ignore events from invalid event sources"
+  priority: 1
+  condition: "eventSource == null || (!eventSource.toUpperCase().contains('AIS2'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid AIS2 event source ' + eventSource + ' for event: ' + envelope.getEventId())"
+
+
+# Rule 7: Validate Regulatory Region
+- name: "AIS2 - Validate Regulatory Region"
+  description: "Allow only STL or ATL regions"
+  priority: 1
+  condition: "regulatoryRegion == null || (!regulatoryRegion.equalsIgnoreCase('STL') && !regulatoryRegion.equalsIgnoreCase('ATL'))"
+  actions:
+    - "envelope.setIgnore(true)"
+    - "System.out.println('Rule: Invalid regulatory region ' + regulatoryRegion + ' for AIS2 event: ' + envelope.getEventId())"
+
+
+# Rule 8: Default SW_SER_NUM
+- name: "AIS2 - Force SW_SER_NUM numeric"
+  description: "Set switchSerialNumber to 0000 if non-numeric"
+  priority: 3
+  condition: "envelope.getEventPayload().contains('switchSerialNumber') && !envelope.getEventPayload().matches('.*\"switchSerialNumber\":\"[0-9]+\".*')"
+  actions:
+    - "envelope.setEventPayload(envelope.getEventPayload().replaceAll('\"switchSerialNumber\":\"[^\"]*\"','\"switchSerialNumber\":\"0000\"'))"
+    - "System.out.println('Rule Applied: AIS2 SW_SER_NUM corrected')"
+
+
+# Rule 9: Enrich Missing SW_SER_NUM
+- name: "AIS2 - Enrich Missing SW_SER_NUM"
+  description: "Populate missing SW_SER_NUM from AIS2 payload"
+  priority: 4
+  condition: "envelope.getEventPayload().contains('switchSerialNumber')"
+  actions:
+    - "System.out.println('AIS2 enrichment started for event: ' + envelope.getEventId())"
+    - "System.out.println('AIS2 will update missing SW_SER_NUM if DB value is NULL')"
