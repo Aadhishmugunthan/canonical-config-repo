@@ -1,1 +1,299 @@
+eventName: DISBURSEMENT
+description: Disbursement transactions
 
+tables:
+
+# ===== TABLE 1 : SEND_TRANSACTIONS =====
+
+- tableName: SEND_TRANSACTIONS
+  order: 1
+  type: main
+
+  mandatory:
+
+    - TRAN_ID
+    - TRAN_TYPE
+
+  mapping:
+
+    TRAN_ID: $.transactionId
+    TRAN_TYPE: $.tranTypeCd
+
+    SWITCH_STAT_DESC: $.networkStatusDescription
+    TRAN_INIT_ID: $.partnerRefId
+
+    SWITCH_STAT: $.status
+
+    ORIG_INST_ID: $.spnsrBankBusPartnerRefId
+    ORIG_INST_NAM: $.spnsrBankName
+
+    TRANFR_ACPT_NAM: $.cardAcceptorName
+    TRANFR_ACPT_ID: $.cardAcceptorIdCd
+
+    TRAN_CRTE_DT: $.createTimestamp
+
+    CUR_STAT: $.status
+    ORIG_STAT: $.originalStatus
+
+    CUST_REF_NUM: $.transferRef
+    USE_CASE: $.paymentTranTypeCd
+
+    MSG_TYPE: $.networkCode
+    REF_ID: $.retrievalRefNum
+
+    SW_SER_NUM: $.sysTraceAudNum
+    BNKINT_REF_NUM: $.transferId
+
+    SEND_ACCT: $.sndrAcct
+    RECIP_ACCT: $.rcvrAcct
+
+    TRAN_AMT: $.tranAmt
+    TRAN_CURR: $.tranAmtCurr
+
+    ERR_CD: $.networkResponseCode
+    ERR_CD_DESC: $.statusReason
+
+    FUND_AVAIL: $.fundsAvailable
+
+    CORLTN_ID: $.transferId
+
+    CRTE_TS: $.createTimestamp
+    CRTE_USER_NAM: $.partnerNam
+
+    UPDT_TS: $.statusTimestamp
+    UPDT_USER_NAM: $.partnerNam
+
+    RPLCTN_UPDT_TS: $.statusTimestamp
+
+    NTWRK_CD: $.networkCode
+    NTWRK_RESP_CD: $.networkResponseCode
+    NTWRK_RESP_CD_DESC: $.networkStatusDescription
+
+    TRAN_INIT_NAM: $.partnerNam
+
+    NAM_STAT: $.status
+    CVC_STAT: $.status
+    CVC_RESP_CD: $.networkResponseCode
+
+    ACCT_NUM: $.rcvrAcct
+    ACCT_TYPE: $.receiverAccountNumberType
+    ACCT_HOLD_NAM: $.rcvrFirstName
+
+    NON_FIN_TXN: $.tranTypeCd
+
+# ===== TABLE 2 : SEND_TRAN_DTL =====
+
+- tableName: SEND_TRAN_DTL
+  order: 2
+  type: detail
+  parentIdField: TRAN_ID
+
+  mandatory:
+
+    - TRAN_ID
+
+  mapping:
+
+    TRAN_ID: $.transactionId
+
+    TRAN_CRTE_DT: $.createTimestamp
+
+    PAYMT_REF: $.transferRef
+    UNQ_TRAN_REF: $.tranId
+
+    FUND_SRC: $.fundingSource
+    TRAN_PRPS: $.transactionPurpose
+
+    ORIG_RQST_PYLD: $.originatingApiName
+    ORIG_RESP_PYLD: $.networkStatusDescription
+
+    PROC_ID: $.processorId
+
+    ACQ_ICA: $.acquiringIdentificationCd
+    ACQ_IDEN_CD: $.acquiringCountry
+    ACQ_CNTRY_NAM: $.issuerCountryCd
+
+    PAYMT_TYPE: $.paymentTranTypeCd
+    POINT_SERV_INTRCTN: $.networkCode
+
+    TRAN_SETL_AMT: $.setlAmt
+
+    BNC_GTWY_RQST: $.networkGatewayCode
+    BNC_GTWY_RESP: $.networkStatusDescription
+
+    TRANFR_ACPT_ID: $.cardAcceptorTerminalId
+    TRANFR_ACPT_NAM: $.cardAcceptorName
+
+    TRANFR_ACPT_MPG_ID: $.merchantCategoryCd
+    TRANFR_ACPT_MERCH_VALUE: $.statementDesc
+
+    CRDTYCD: $.cardTypeCode
+    POSPERAT: $.networkCode
+    CRDTYCDDES: $.cardTypeCode
+
+    ICHG_RATE_DSGN: $.rateTypeIndicator
+    MERCH_CAT_CD: $.merchantCategoryCd
+
+    MC_ASSGN_MERCH: $.cardAcceptorName
+
+    PAYMT_FACILTR_ID: $.paymentProcessor
+    SUB_MERCH_ID: $.merchantCategoryCd
+
+    TRANFR_TRML_ID: $.cardAcceptorTerminalId
+
+    TRANFR_ACPT_ST_LINE1: $.cardAcceptorAddrStreet
+    TRANFR_ACPT_ST_LINE2: $.cardAcceptorAddrCity
+
+    TRANFR_ACPT_CITY: $.cardAcceptorAddrCity
+    TRANFR_ACPT_ST: $.cardAcceptorAddrState
+
+    TRANFR_ACPT_CNTRY_NAM: $.cardAcceptorAddrCountry
+    TRANFR_ACPT_POST_CD: $.cardAcceptorAddrPostalCd
+
+    CRTE_TS: $.createTimestamp
+    CRTE_USER_NAM: $.partnerNam
+
+    UPDT_TS: $.statusTimestamp
+    UPDT_USER_NAM: $.partnerNam
+
+    EVENT_ID: $.transactionId
+    EVENT_TS: $.statusTimestamp
+    EVENT_CORLTN_ID: $.transferId
+
+    MSG_VERSION: $.networkCode
+
+    TRAN_TYPE_IND_CD: $.tranTypeInd
+    REGULATED_RATE_TYPE_CD: $.rateTypeIndicator
+
+    CVC_RESP_DESC: $.networkStatusDescription
+
+    RPLCTN_UPDT_TS: $.statusTimestamp
+
+# ===== TABLE 3 : SEND_RECIP_DTL =====
+
+- tableName: SEND_RECIP_DTL
+  order: 3
+  type: recipient
+
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  mandatory:
+
+    - TRAN_ID
+
+  mapping:
+
+    TRAN_ID: $.transactionId
+
+    TRAN_CRTE_DT: $.createTimestamp
+
+    SEND_ACCT_NUM: $.sndrAcct
+    SEND_ACCT_URI: $.sndrAcctUri
+    SEND_ACCT_NUM_TYPE: $.receiverAccountNumberType
+
+    RECIP_FIRST_NAM: $.rcvrFirstName
+    RECIP_MID_NAM: $.rcvrMiddleName
+    RECIP_LST_NAM: $.rcvrLastName
+
+    RECIP_PHN: $.rcvrPhoneNum
+    RECIP_EMAIL: $.rcvrEmailAddr
+
+    RECIP_DOB: $.rcvrBirthDate
+    RECIP_NATL: $.rcvrNationalityCd
+
+    RECIP_BIRTH_CNTRY_NAM: $.rcvrCountryCd
+
+    RECIP_ACCT_NUM: $.rcvrAcct
+    RECIP_ACCT_URI: $.rcvrAcctUri
+
+    RECIP_ACCT_NUM_TYPE: $.receiverAccountNumberType
+
+    RECIP_CARD_NUM: $.rcvrAcct
+    RECIP_CARD_EXPIR_DT: $.rcvrCardExpirDt
+
+    RECIP_ST_LINE1: $.rcvrAddrLine1
+    RECIP_ST_LINE2: $.rcvrAddrLine2
+
+    RECIP_CITY: $.rcvrCity
+    RECIP_ST: $.rcvrCountrySubCd
+
+    RECIP_CNTRY_NAM: $.rcvrCountryCd
+    RECIP_POST_CD: $.rcvrPostalCd
+
+    CRTE_TS: $.createTimestamp
+    CRTE_USER_NAM: $.partnerNam
+
+    UPDT_TS: $.statusTimestamp
+    UPDT_USER_NAM: $.partnerNam
+
+    RPLCTN_UPDT_TS: $.statusTimestamp
+
+    PARTY_ROLE: $.paymentTranTypeCd
+
+# ===== TABLE 4 : SEND_TRAN_ADDR_DTL =====
+
+- tableName: SEND_TRAN_ADDR_DTL
+  order: 4
+  type: address
+
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  addressTypes:
+
+    - type: RECEIVER
+
+      rootPath: $
+
+      fields:
+
+        TRAN_ID: $.transactionId
+
+        ST_LINE1: $.rcvrAddrLine1
+        ST_LINE2: $.rcvrAddrLine2
+
+        CITY: $.rcvrCity
+        ST: $.rcvrCountrySubCd
+
+        CNTRY_NAM: $.rcvrCountryCd
+        POST_CD: $.rcvrPostalCd
+
+        ADDR_STAT: $.status
+        POST_CD_STAT: $.status
+
+        CRTE_TS: $.createTimestamp
+        UPDT_TS: $.statusTimestamp
+
+        CRTE_USER_NAM: $.partnerNam
+        UPDT_USER_NAM: $.partnerNam
+
+        RPLCTN_UPDT_TS: $.statusTimestamp
+
+    - type: MERCHANT
+
+      rootPath: $
+
+      fields:
+
+        TRAN_ID: $.transactionId
+
+        ST_LINE1: $.cardAcceptorAddrStreet
+        ST_LINE2: $.cardAcceptorName
+
+        CITY: $.cardAcceptorAddrCity
+        ST: $.cardAcceptorAddrState
+
+        CNTRY_NAM: $.cardAcceptorAddrCountry
+        POST_CD: $.cardAcceptorAddrPostalCd
+
+        ADDR_STAT: $.status
+        POST_CD_STAT: $.status
+
+        CRTE_TS: $.createTimestamp
+        UPDT_TS: $.statusTimestamp
+
+        CRTE_USER_NAM: $.partnerNam
+        UPDT_USER_NAM: $.partnerNam
+
+        RPLCTN_UPDT_TS: $.statusTimestamp
