@@ -1,1 +1,328 @@
+eventName: TRANSACTION
+description: Transaction Event Processing
 
+tables:
+
+# ==========================================================
+# TABLE 1 : SEND_TRANSACTIONS
+# ==========================================================
+
+- tableName: SEND_TRANSACTIONS
+  order: 1
+  type: main
+
+  mandatory:
+    - TRAN_ID
+    - TRAN_TYPE
+
+  mapping:
+
+    TRAN_ID: $.transactionId
+    TRAN_TYPE: $.tranTypeCd
+
+    SWITCH_STAT_DESC: $.networkStatusDescription
+    TRAN_INIT_ID: $.partnerRefId
+
+    SWITCH_STAT: $.status
+
+    ORIG_INST_ID: $.spnsrBankBusPartnerRefId
+    ORIG_INST_NAM: $.spnsrBankName
+
+    TRANFR_ACPT_NAM: $.cardAcceptorName
+    TRANFR_ACPT_ID: $.deviceId
+
+    TRAN_CRTE_DT: $.createTimestamp
+
+    CUR_STAT: $.status
+    ORIG_STAT: $.originalStatus
+
+    CUST_REF_NUM: $.transferRef
+    USE_CASE: $.paymentTranTypeCd
+
+    MSG_TYPE: $.singleDualMessageCode
+
+    REF_ID: $.retrievalRefNum
+
+    SW_SER_NUM: $.switchSerialNumber
+    BNKINT_REF_NUM: $.ntwrkRefNum
+
+    SEND_ACCT: $.sndrAcct
+    RECIP_ACCT: $.rcvrAcct
+
+    TRAN_AMT: $.tranAmt
+    TRAN_CURR: $.tranAmtCurr
+
+    ERR_CD: $.networkResponseCode
+    ERR_CD_DESC: $.statusReason
+
+    FUND_AVAIL: $.fundAvailable
+
+    CORLTN_ID: $.transactionId
+
+    CRTE_TS: $.createTimestamp
+    CRTE_USER_NAM: $.partnerNam
+
+    UPDT_TS: $.statusTimestamp
+    UPDT_USER_NAM: $.partnerNam
+
+    RPLCTN_UPDT_TS: $.statusTimestamp
+
+    NTWRK_CD: $.networkCode
+    NTWRK_RESP_CD: $.networkResponseCode
+    NTWRK_RESP_CD_DESC: $.networkStatusDescription
+
+    TRAN_INIT_NAM: $.partnerNam
+
+    NAM_STAT: $.status
+    CVC_STAT: $.status
+
+    CVC_RESP_CD: $.networkResponseCode
+
+    ACCT_NUM: $.sndrAcct
+    ACCT_TYPE: $.paymentTranTypeCd
+    ACCT_HOLD_NAM: $.sndrFirstName
+
+    NON_FIN_TXN: $.tranTypeCd
+
+
+# ==========================================================
+# TABLE 2 : SEND_TRAN_DTL
+# ==========================================================
+
+- tableName: SEND_TRAN_DTL
+  order: 2
+  type: detail
+  parentIdField: TRAN_ID
+
+  mandatory:
+    - TRAN_ID
+
+  mapping:
+
+    TRAN_ID: $.transactionId
+
+    TRAN_CRTE_DT: $.createTimestamp
+
+    PAYMT_REF: $.transferRef
+    UNQ_TRAN_REF: $.unqRefNum
+
+    FUND_SRC: $.paymentProcessor
+    TRAN_PRPS: $.additionalMessage
+
+    ORIG_RQST_PYLD: $.originalNetworkData
+    ORIG_RESP_PYLD: $.networkStatusDescription
+
+    PROC_ID: $.processorId
+
+    ACQ_ICA: $.acquiringIdentificationCd
+    ACQ_IDEN_CD: $.acquiringCountry
+    ACQ_CNTRY_NAM: $.issuerCountryCd
+
+    PAYMT_TYPE: $.paymentTranTypeCd
+    POINT_SERV_INTRCTN: $.channel
+
+    TRAN_SETL_AMT: $.setlAmt
+
+    BNC_GTWY_RQST: $.originalNetworkData
+    BNC_GTWY_RESP: $.networkStatusDescription
+
+    TRANFR_ACPT_ID: $.deviceId
+    TRANFR_ACPT_NAM: $.cardAcceptorName
+
+    TRANFR_ACPT_MPG_ID: $.merchantCategoryCd
+    TRANFR_ACPT_MERCH_VALUE: $.statementDesc
+
+    CRDTYCD: $.cardTypeCode
+    POSPERAT: $.channel
+    CRDTYCDDES: $.cardTypeCode
+
+    ICHG_RATE_DSGN: $.ichgFee
+    MERCH_CAT_CD: $.merchantCategoryCd
+
+    MC_ASSGN_MERCH: $.cardAcceptorName
+
+    PAYMT_FACILTR_ID: $.paymentProcessor
+    SUB_MERCH_ID: $.merchantCategoryCd
+
+    TRANFR_TRML_ID: $.deviceId
+
+    TRANFR_ACPT_ST_LINE1: $.location
+    TRANFR_ACPT_ST_LINE2: $.statementDesc
+
+    TRANFR_ACPT_CITY: $.tranOrigCountryCd
+    TRANFR_ACPT_ST: $.issuerCountryCd
+    TRANFR_ACPT_CNTRY_NAM: $.issuerCountryCd
+
+    TRANFR_ACPT_POST_CD: $.sndrPostalCd
+
+    CRTE_TS: $.createTimestamp
+    CRTE_USER_NAM: $.partnerNam
+
+    UPDT_TS: $.statusTimestamp
+    UPDT_USER_NAM: $.partnerNam
+
+    EVENT_ID: $.transactionId
+    EVENT_TS: $.statusTimestamp
+    EVENT_CORLTN_ID: $.transactionId
+
+    MSG_VERSION: $.singleDualMessageCode
+
+    TRAN_TYPE_IND_CD: $.tranTypeInd
+
+    REGULATED_RATE_TYPE_CD: $.rateTypeIndicator
+
+    CVC_RESP_DESC: $.networkStatusDescription
+
+    RPLCTN_UPDT_TS: $.statusTimestamp
+
+
+# ==========================================================
+# TABLE 3 : SEND_RECIP_DTL
+# ==========================================================
+
+- tableName: SEND_RECIP_DTL
+  order: 3
+  type: recipient
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  mandatory:
+    - TRAN_ID
+
+  mapping:
+
+    TRAN_ID: $.transactionId
+
+    TRAN_CRTE_DT: $.createTimestamp
+
+    SEND_FIRST_NAM: $.sndrFirstName
+    SEND_MID_NAM: $.sndrMiddleName
+    SEND_LST_NAM: $.sndrLastName
+
+    SEND_PHN: $.sndrPhoneNum
+    SEND_EMAIL: $.sndrEmailAddr
+
+    SEND_DOB: $.sndrBirthDt
+    SEND_NATL: $.sndrNationalityCd
+    SEND_BIRTH_CNTRY_NAM: $.sndrCountryCd
+
+    SEND_ACCT_NUM: $.sndrAcct
+    SEND_ACCT_URI: $.sndrAcct
+    SEND_GOVT_ID_URI: $.sndrAcct
+
+    SEND_ACCT_NUM_TYPE: $.paymentTranTypeCd
+
+    SEND_CARD_NUM: $.sndrAcct
+    SEND_CARD_EXPIR_DT: ""
+
+    SEND_ST_LINE1: $.sndrAddrLine1
+    SEND_ST_LINE2: $.sndrAddrLine2
+    SEND_CITY: $.sndrCityName
+    SEND_ST: $.sndrCountrySubCd
+    SEND_CNTRY_NAM: $.sndrCountryCd
+    SEND_POST_CD: $.sndrPostalCd
+
+    RECIP_FIRST_NAM: $.rcvrFirstName
+    RECIP_MID_NAM: $.rcvrMiddleName
+    RECIP_LST_NAM: $.rcvrLastName
+
+    RECIP_PHN: $.rcvrPhoneNum
+    RECIP_EMAIL: $.rcvrEmailAddr
+
+    RECIP_DOB: $.rcvrBirthDate
+    RECIP_NATL: $.rcvrNationalityCd
+    RECIP_BIRTH_CNTRY_NAM: $.rcvrCountryCd
+
+    RECIP_ACCT_NUM: $.rcvrAcct
+    RECIP_ACCT_URI: $.rcvrAcct
+    RECIP_GOVT_ID_URI: $.rcvrAcct
+
+    RECIP_ACCT_NUM_TYPE: $.paymentTranTypeCd
+
+    RECIP_CARD_NUM: $.rcvrAcct
+    RECIP_CARD_EXPIR_DT: $.rcvrCardExpirDt
+
+    RECIP_ST_LINE1: $.rcvrAddrLine1
+    RECIP_ST_LINE2: $.rcvrAddrLine2
+
+    RECIP_CITY: $.rcvrCity
+    RECIP_ST: $.rcvrCountrySubCd
+    RECIP_CNTRY_NAM: $.rcvrCountryCd
+    RECIP_POST_CD: $.rcvrPostalCd
+
+    CRTE_TS: $.createTimestamp
+    CRTE_USER_NAM: $.partnerNam
+
+    UPDT_TS: $.statusTimestamp
+    UPDT_USER_NAM: $.partnerNam
+
+    RPLCTN_UPDT_TS: $.statusTimestamp
+
+    PARTY_ROLE: $.paymentTranTypeCd
+
+
+# ==========================================================
+# TABLE 4 : SEND_TRAN_ADDR_DTL
+# ==========================================================
+
+- tableName: SEND_TRAN_ADDR_DTL
+  order: 4
+  type: address
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  addressTypes:
+
+    - type: SENDER
+      rootPath: $
+
+      fields:
+
+        TRAN_ID: $.transactionId
+
+        ST_LINE1: $.sndrAddrLine1
+        ST_LINE2: $.sndrAddrLine2
+
+        CITY: $.sndrCityName
+        ST: $.sndrCountrySubCd
+
+        CNTRY_NAM: $.sndrCountryCd
+        POST_CD: $.sndrPostalCd
+
+        ADDR_STAT: $.status
+        POST_CD_STAT: $.status
+
+        CRTE_TS: $.createTimestamp
+        UPDT_TS: $.statusTimestamp
+
+        CRTE_USER_NAM: $.partnerNam
+        UPDT_USER_NAM: $.partnerNam
+
+        RPLCTN_UPDT_TS: $.statusTimestamp
+
+    - type: RECEIVER
+      rootPath: $
+
+      fields:
+
+        TRAN_ID: $.transactionId
+
+        ST_LINE1: $.rcvrAddrLine1
+        ST_LINE2: $.rcvrAddrLine2
+
+        CITY: $.rcvrCity
+        ST: $.rcvrCountrySubCd
+
+        CNTRY_NAM: $.rcvrCountryCd
+        POST_CD: $.rcvrPostalCd
+
+        ADDR_STAT: $.status
+        POST_CD_STAT: $.status
+
+        CRTE_TS: $.createTimestamp
+        UPDT_TS: $.statusTimestamp
+
+        CRTE_USER_NAM: $.partnerNam
+        UPDT_USER_NAM: $.partnerNam
+
+        RPLCTN_UPDT_TS: $.statusTimestamp
