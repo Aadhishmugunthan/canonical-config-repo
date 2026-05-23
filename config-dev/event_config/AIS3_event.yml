@@ -1,1 +1,351 @@
+eventName: AIS3
+description: Account Information Service V3 transactions
 
+tables:
+
+# ===== TABLE 1 : SEND_TRANSACTIONS =====
+
+- tableName: SEND_TRANSACTIONS
+  order: 1
+  type: main
+
+  mandatory:
+
+  - TRAN_ID
+  - TRAN_TYPE
+
+  mapping:
+
+    TRAN_ID: $.accountInformationId
+    TRAN_TYPE: $.transactionType
+
+    SWITCH_STAT_DESC: $.sendingAccountEligible.responseReasonDetail
+
+    TRAN_INIT_ID: $.referenceId
+
+    SWITCH_STAT: $.sendingAccountEligible.eligible
+
+    ORIG_INST_ID: $.partnerId
+    ORIG_INST_NAM: $.partnerName
+
+    TRANFR_ACPT_NAM: $.institution
+    TRANFR_ACPT_ID: $.partnerId
+
+    TRAN_CRTE_DT: $.transactionLocalDateTime
+
+    CUR_STAT: $.sendingAccountEligible.responseReasonCode
+    ORIG_STAT: $.receivingAccountEligible.eligible
+
+    CUST_REF_NUM: $.referenceId
+
+    USE_CASE: $.paymentType
+
+    MSG_TYPE: $.network
+
+    REF_ID: $.referenceId
+
+    SW_SER_NUM: $.correlationId
+
+    BNKINT_REF_NUM: $.correlationId
+
+    SEND_ACCT: $.accountUri
+    RECIP_ACCT: $.accountUri
+
+    TRAN_AMT: $.amount
+    TRAN_CURR: $.currency
+
+    ERR_CD: $.sendingAccountEligible.responseReasonCode
+    ERR_CD_DESC: $.sendingAccountEligible.responseReasonDetail
+
+    FUND_AVAIL: $.fundsAvailability
+
+    CORLTN_ID: $.correlationId
+
+    CRTE_TS: $.transactionLocalDateTime
+    CRTE_USER_NAM: $.partnerName
+
+    UPDT_TS: $.transactionLocalDateTime
+    UPDT_USER_NAM: $.partnerName
+
+    RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
+    NTWRK_CD: $.network
+    NTWRK_RESP_CD: $.brand
+    NTWRK_RESP_CD_DESC: $.acceptanceBrand
+
+    TRAN_INIT_NAM: $.partnerName
+
+    NAM_STAT: $.receivingAccountEligible.eligible
+    CVC_STAT: $.sendingAccountEligible.eligible
+    CVC_RESP_CD: $.sendingAccountEligible.responseReasonCode
+
+    ACCT_NUM: $.accountUri
+    ACCT_TYPE: $.accountType
+    ACCT_HOLD_NAM: $.institution
+
+    NON_FIN_TXN: $.enhancedResponse
+
+
+# ===== TABLE 2 : SEND_TRAN_DTL =====
+
+- tableName: SEND_TRAN_DTL
+  order: 2
+  type: detail
+  parentIdField: TRAN_ID
+
+  mandatory:
+
+  - TRAN_ID
+
+  mapping:
+
+    TRAN_ID: $.accountInformationId
+
+    TRAN_CRTE_DT: $.transactionLocalDateTime
+
+    PAYMT_REF: $.referenceId
+    UNQ_TRAN_REF: $.correlationId
+
+    FUND_SRC: $.partnerName
+
+    TRAN_PRPS: $.paymentType
+
+    ORIG_RQST_PYLD: $.originalRequestPayload
+    ORIG_RESP_PYLD: $.originalResponsePayload
+
+    PROC_ID: $.partnerId
+
+    ACQ_ICA: $.brand
+    ACQ_IDEN_CD: $.acceptanceBrand
+    ACQ_CNTRY_NAM: $.country
+
+    PAYMT_TYPE: $.paymentType
+
+    POINT_SERV_INTRCTN: $.network
+
+    TRAN_SETL_AMT: $.amount
+
+    BNC_GTWY_RQST: $.originalRequestPayload
+    BNC_GTWY_RESP: $.originalResponsePayload
+
+    TRANFR_ACPT_ID: $.partnerId
+    TRANFR_ACPT_NAM: $.institution
+
+    TRANFR_ACPT_MPG_ID: $.partnerId
+    TRANFR_ACPT_MERCH_VALUE: $.institution
+
+    CRDTYCD: $.accountType
+
+    POSPERAT: $.network
+
+    CRDTYCDDES: $.accountType
+
+    ICHG_RATE_DSGN: $.brand
+
+    MERCH_CAT_CD: $.paymentType
+
+    MC_ASSGN_MERCH: $.institution
+
+    PAYMT_FACILTR_ID: $.partnerId
+
+    SUB_MERCH_ID: $.partnerId
+
+    TRANFR_TRML_ID: $.partnerId
+
+    TRANFR_ACPT_ST_LINE1: $.institution
+    TRANFR_ACPT_ST_LINE2: $.institution
+
+    TRANFR_ACPT_CITY: $.country
+    TRANFR_ACPT_ST: $.country
+
+    TRANFR_ACPT_CNTRY_NAM: $.country
+
+    TRANFR_ACPT_POST_CD: $.accountStatementCurrency
+
+    CRTE_TS: $.transactionLocalDateTime
+    CRTE_USER_NAM: $.partnerName
+
+    UPDT_TS: $.transactionLocalDateTime
+    UPDT_USER_NAM: $.partnerName
+
+    EVENT_ID: $.accountInformationId
+    EVENT_TS: $.transactionLocalDateTime
+    EVENT_CORLTN_ID: $.correlationId
+
+    MSG_VERSION: $.network
+
+    TRAN_TYPE_IND_CD: $.transactionType
+
+    REGULATED_RATE_TYPE_CD: $.brand
+
+    CVC_RESP_DESC: $.sendingAccountEligible.responseReasonDetail
+
+    RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
+
+# ===== TABLE 3 : SEND_RECIP_DTL =====
+
+- tableName: SEND_RECIP_DTL
+  order: 3
+  type: recipient
+
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  mandatory:
+
+  - TRAN_ID
+
+  mapping:
+
+    TRAN_ID: $.accountInformationId
+
+    TRAN_CRTE_DT: $.transactionLocalDateTime
+
+    SEND_FIRST_NAM: $.partnerName
+    SEND_MID_NAM: $.partnerName
+    SEND_LST_NAM: $.institution
+
+    SEND_PHN: $.partnerId
+
+    SEND_EMAIL: $.partnerName
+
+    SEND_DOB: $.transactionLocalDateTime
+
+    SEND_NATL: $.country
+    SEND_BIRTH_CNTRY_NAM: $.country
+
+    SEND_ACCT_NUM: $.accountUri
+    SEND_ACCT_URI: $.accountUri
+
+    SEND_GOVT_ID_URI: $.accountUri
+
+    SEND_ACCT_NUM_TYPE: $.accountType
+
+    SEND_CARD_NUM: $.accountUri
+
+    SEND_CARD_EXPIR_DT: ""
+
+    SEND_ST_LINE1: $.institution
+    SEND_ST_LINE2: $.institution
+
+    SEND_CITY: $.country
+    SEND_ST: $.country
+
+    SEND_CNTRY_NAM: $.country
+
+    SEND_POST_CD: $.accountStatementCurrency
+
+    RECIP_FIRST_NAM: $.institution
+    RECIP_MID_NAM: $.institution
+    RECIP_LST_NAM: $.institution
+
+    RECIP_PHN: $.partnerId
+
+    RECIP_EMAIL: $.partnerName
+
+    RECIP_DOB: $.transactionLocalDateTime
+
+    RECIP_NATL: $.country
+    RECIP_BIRTH_CNTRY_NAM: $.country
+
+    RECIP_ACCT_NUM: $.accountUri
+    RECIP_ACCT_URI: $.accountUri
+
+    RECIP_GOVT_ID_URI: $.accountUri
+
+    RECIP_ACCT_NUM_TYPE: $.accountType
+
+    RECIP_CARD_NUM: $.accountUri
+
+    RECIP_CARD_EXPIR_DT: ""
+
+    RECIP_ST_LINE1: $.institution
+    RECIP_ST_LINE2: $.institution
+
+    RECIP_CITY: $.country
+    RECIP_ST: $.country
+
+    RECIP_CNTRY_NAM: $.country
+
+    RECIP_POST_CD: $.accountStatementCurrency
+
+    CRTE_TS: $.transactionLocalDateTime
+    CRTE_USER_NAM: $.partnerName
+
+    UPDT_TS: $.transactionLocalDateTime
+    UPDT_USER_NAM: $.partnerName
+
+    RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
+    PARTY_ROLE: $.paymentType
+
+
+# ===== TABLE 4 : SEND_TRAN_ADDR_DTL =====
+
+- tableName: SEND_TRAN_ADDR_DTL
+  order: 4
+  type: address
+
+  parentIdField: TRAN_ID
+  autoGenerateId: true
+
+  addressTypes:
+
+    - type: INSTITUTION
+
+      rootPath: $
+
+      fields:
+
+        TRAN_ID: $.accountInformationId
+
+        ST_LINE1: $.institution
+        ST_LINE2: $.institution
+
+        CITY: $.country
+        ST: $.country
+
+        CNTRY_NAM: $.country
+
+        POST_CD: $.accountStatementCurrency
+
+        ADDR_STAT: $.accountType
+        POST_CD_STAT: $.accountType
+
+        CRTE_TS: $.transactionLocalDateTime
+        UPDT_TS: $.transactionLocalDateTime
+
+        CRTE_USER_NAM: $.partnerName
+        UPDT_USER_NAM: $.partnerName
+
+        RPLCTN_UPDT_TS: $.transactionLocalDateTime
+
+    - type: ACCOUNT
+
+      rootPath: $
+
+      fields:
+
+        TRAN_ID: $.accountInformationId
+
+        ST_LINE1: $.accountUri
+        ST_LINE2: $.accountType
+
+        CITY: $.network
+        ST: $.brand
+
+        CNTRY_NAM: $.country
+
+        POST_CD: $.accountStatementCurrency
+
+        ADDR_STAT: $.sendingAccountEligible.eligible
+        POST_CD_STAT: $.accountType
+
+        CRTE_TS: $.transactionLocalDateTime
+        UPDT_TS: $.transactionLocalDateTime
+
+        CRTE_USER_NAM: $.partnerName
+        UPDT_USER_NAM: $.partnerName
+
+        RPLCTN_UPDT_TS: $.transactionLocalDateTime
