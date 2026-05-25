@@ -202,7 +202,7 @@ tables:
     SEND_ACCT_NUM_TYPE: $.accountType
 
     SEND_CARD_NUM: $.accountUri
-    SEND_CARD_EXPIR_DT: $.cardExpiry
+    SEND_CARD_EXPIR_DT: $.cardExpiryData
 
     SEND_ST_LINE1: $.institution
     SEND_ST_LINE2: $.institution
@@ -227,7 +227,7 @@ tables:
     RECIP_ACCT_NUM_TYPE: $.accountType
 
     RECIP_CARD_NUM: $.accountUri
-    RECIP_CARD_EXPIR_DT: $.cardExpiry
+    RECIP_CARD_EXPIR_DT: $.cardExpiryData
 
     RECIP_ST_LINE1: $.institution
     RECIP_ST_LINE2: $.institution
