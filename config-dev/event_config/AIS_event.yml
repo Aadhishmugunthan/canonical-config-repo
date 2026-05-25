@@ -245,8 +245,6 @@ tables:
     PARTY_ROLE: $.paymentType
 
     
-    SEND_CARD_EXPIR_DT: $.sendCardExp
-    RECIP_CARD_EXPIR_DT: $.recipCardExp
     RCVR_SRT_CD: $.rcvrSrtCd
     SEND_SRT_CD: $.sendSrtCd
 
