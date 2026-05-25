@@ -37,7 +37,7 @@ tables:
     REF_ID: $.referenceId
 
     SW_SER_NUM: $.switchSerialNumber
-    BNKINT_REF_NUM: $.correlationId
+    BNKINT_REF_NUM: $.bnkintRefNumber
 
     SEND_ACCT: $.accountUri
     RECIP_ACCT: $.accountUri
