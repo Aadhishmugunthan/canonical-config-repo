@@ -75,15 +75,15 @@ tables:
     NON_FIN_TXN: $.accountType
 
     TRACE_ID: $.traceId
-    ORIG_CNTRY: $origCntry
-    SEND_ERR_CD: $sendErrCd
-    RECIP_ERR_CD: $recipErrCd
-    SEND_ELIG: $sendElig
-    RECIP_ELIG: $recipElig
-    ADDR_STAT: $addrStat
-    POST_CD_STAT: $postCdStat
-    AVS_RESP_CD: $avsRespCd
-    TLID: $tlid
+    ORIG_CNTRY: $.origCntry
+    SEND_ERR_CD: $.sendErrCd
+    RECIP_ERR_CD: $.recipErrCd
+    SEND_ELIG: $.sendElig
+    RECIP_ELIG: $.recipElig
+    ADDR_STAT: $.addrStat
+    POST_CD_STAT: $.postCdStat
+    AVS_RESP_CD: $.avsRespCd
+    TLID: $.tlid
     
 
 # ===== TABLE 2 : AIS_TRAN_DTL (Detail Table) =====
