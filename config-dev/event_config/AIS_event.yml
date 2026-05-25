@@ -84,7 +84,6 @@ tables:
     POST_CD_STAT: $.postCdStat
     AVS_RESP_CD: $.avsRespCd
     TLID: $.tlid
-    REF_ID: $.refid
     
 
 # ===== TABLE 2 : AIS_TRAN_DTL (Detail Table) =====
