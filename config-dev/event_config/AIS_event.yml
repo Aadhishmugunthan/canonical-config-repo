@@ -133,6 +133,7 @@ tables:
     CRDTYCD: $.accountType
     POSPERAT: $.network
     CRDTYCDDES: $.accountType
+    ENHANC_RESP: $.paymentType
 
     ICHG_RATE_DSGN: $.brand
     MERCH_CAT_CD: $.paymentType
