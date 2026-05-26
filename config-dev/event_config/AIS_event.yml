@@ -161,6 +161,25 @@ tables:
     EVENT_TS: $.transactionLocalDateTime
     EVENT_CORLTN_ID: $.correlationId
 
+    BRAND: $.brand
+    ACCPT_BRAND: $.brand
+
+    PROD_TYPE: $.paymentType
+    ACCT_URI: $.network
+    INST_NAM: $.partnerName
+    INST_CNTRY_NAM: $.country
+    SEND_ERR_CD_DESC: $.accountUri
+    RECIP_ERR_CD_DESC: $.accountType
+    ACCT_STMT_CURR: $.accountStatementCurrency
+    AVS_RESP_CD_DESC: $.paymentType
+    TRAN_TYPE_CD: $.sendSrtCd
+    TRAN_TYPE_DESC: $.sendSrtCd
+    SYS_TRACE_AUD_NUM: $.rcvrSrtCd
+    AUTH_ID_RESP_CD: $.network
+    OPRT_ENV: $.transactionLocalDateTime
+    TRAN_LOC_TS: $.transactionLocalDateTime
+    LOC_DT_TXT: $.transactionLocalDateTime
+
     MSG_VERSION: $.network
 
     TRAN_TYPE_IND_CD: $.transactionType
